@@ -136,7 +136,7 @@ private fun HomeTab(
             contentDescription = null
         )
         Spacer(modifier = Modifier.width(16.dp))
-        Text(text = title)
+        Text(text = title, style = MaterialTheme.typography.subtitle2)
     }
 }
 
