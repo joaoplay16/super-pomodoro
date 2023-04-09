@@ -3,4 +3,7 @@
     <string name="home_tab">Home</string>
     <string name="chat_tab">Chat</string>
     <string name="games_tab">Games</string>
+    <string name="pomodoro">Pomodoro</string>
+    <string name="pomodoro_short_break">Short break</string>
+    <string name="pomodoro_Long_break">Long break</string>
 </resources>
