@@ -2,8 +2,8 @@ package com.playlab.superpomodoro.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple100 = Color(0xFFB07DD9)
-val Purple200 = Color(0xFFC28CED)
+val Purple100 = Color(0xFFC28CED)
+val Purple200 = Color(0xFFB07DD9)
 val Purple400 = Color(0xFF6E59BE)
 val Purple500 = Color(0xFF6200EE)
 
