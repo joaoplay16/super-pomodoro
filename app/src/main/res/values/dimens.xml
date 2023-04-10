@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <item name="check_box_scale" type="dimen" format="float">0.9</item>
+
     <dimen name="button_stop_size">32dp</dimen>
     <dimen name="button_pause_size">32dp</dimen>
     <dimen name="button_resume_size">32dp</dimen>
