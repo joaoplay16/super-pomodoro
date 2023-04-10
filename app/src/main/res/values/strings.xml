@@ -6,4 +6,10 @@
     <string name="pomodoro">Pomodoro</string>
     <string name="pomodoro_short_break">Short break</string>
     <string name="pomodoro_Long_break">Long break</string>
+    <string name="arrow_back_icon_content_description">Back</string>
+    <string name="settings_screen_title">Settings</string>
+    <string name="duration_label">Durations</string>
+    <string name="alerts_label">Alerts</string>
+    <string name="sound_label">Sound</string>
+    <string name="vibration_label">Vibration</string>
 </resources>
