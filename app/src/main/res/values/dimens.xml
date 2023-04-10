@@ -11,5 +11,6 @@
     <dimen name="text_label_font_size">18sp</dimen>
     <dimen name="input_time_font_size">54sp</dimen>
     <dimen name="input_time_label_font_size">12sp</dimen>
+    <dimen name="time_selector_font_size">96sp</dimen>
 
 </resources>
