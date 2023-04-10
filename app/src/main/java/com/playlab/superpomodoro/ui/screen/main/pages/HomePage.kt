@@ -31,7 +31,8 @@ import com.playlab.superpomodoro.ui.theme.SuperPomodoroTheme
 
 @Composable
 fun HomePage(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onSettingsClick: () -> Unit
 ) {
     Column(
         modifier = modifier.fillMaxSize(),
@@ -41,7 +42,7 @@ fun HomePage(
         Row(modifier = Modifier
             .fillMaxWidth()
             .padding(top = 10.dp), Arrangement.End){
-            IconButton(onClick = { /*TODO go to settings*/ }) {
+            IconButton(onClick =  onSettingsClick ) {
                 Icon(
                     modifier = Modifier.padding(16.dp),
                     imageVector = Icons.Rounded.Settings,
@@ -86,7 +87,7 @@ fun HomePage(
 fun HomePagePreview() {
     SuperPomodoroTheme(false) {
         Surface {
-            HomePage()
+            HomePage(onSettingsClick = {})
         }
     }
 }
