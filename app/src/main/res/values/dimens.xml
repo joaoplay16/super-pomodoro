@@ -3,4 +3,11 @@
     <dimen name="button_stop_size">32dp</dimen>
     <dimen name="button_pause_size">32dp</dimen>
     <dimen name="button_resume_size">32dp</dimen>
+    <dimen name="input_time_size">100dp</dimen>
+
+    <dimen name="screen_title_font_size">24sp</dimen>
+    <dimen name="text_label_font_size">18sp</dimen>
+    <dimen name="input_time_font_size">54sp</dimen>
+    <dimen name="input_time_label_font_size">12sp</dimen>
+
 </resources>
