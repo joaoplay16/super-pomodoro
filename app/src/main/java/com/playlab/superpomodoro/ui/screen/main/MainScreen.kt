@@ -7,6 +7,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.tooling.preview.Preview
 import com.playlab.superpomodoro.ui.components.HomeTabBar
 import com.playlab.superpomodoro.ui.components.TabPage
+import com.playlab.superpomodoro.ui.screen.PomodoroViewModel
 import com.playlab.superpomodoro.ui.screen.main.pages.ChatPage
 import com.playlab.superpomodoro.ui.screen.main.pages.GamesPage
 import com.playlab.superpomodoro.ui.screen.main.pages.HomePage
@@ -15,7 +16,8 @@ import com.playlab.superpomodoro.ui.theme.SuperPomodoroTheme
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun MainScreen(
-    onSettingsClick: () -> Unit
+    onSettingsClick: () -> Unit,
+    pomodoroViewModel: PomodoroViewModel?
 ) {
     var selectedTab by remember{ mutableStateOf(TabPage.Home) }
 
@@ -26,7 +28,10 @@ fun MainScreen(
         )
     }){
         when(selectedTab){
-            TabPage.Home -> HomePage(onSettingsClick = onSettingsClick)
+            TabPage.Home -> HomePage(
+                onSettingsClick = onSettingsClick,
+                pomodoroViewModel = pomodoroViewModel
+            )
             TabPage.Chat -> ChatPage()
             else -> GamesPage()
         }
@@ -38,7 +43,10 @@ fun MainScreen(
 fun PreviewMainScreen() {
     SuperPomodoroTheme(false) {
         Surface {
-            MainScreen(onSettingsClick = {})
+            MainScreen(
+                onSettingsClick = {},
+                pomodoroViewModel = null
+            )
         }
     }
 }
