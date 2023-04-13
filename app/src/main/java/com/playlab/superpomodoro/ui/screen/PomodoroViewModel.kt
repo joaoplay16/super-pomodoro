@@ -29,11 +29,12 @@ class PomodoroViewModel: ViewModel() {
         get() = _timerStatus
 
     fun startTimer() {
-
-        if(timerStatus.value in arrayOf(TimerStatus.LONG_BREAK, TimerStatus.SHORT_BREAK)){
-            startBreakTimer(timeLeft)
-        }else{
-            startPomodoroTimer(timeLeft)
+        if(timer == null) { // Avoid creation of multiple instances of Timer
+            if (timerStatus.value in arrayOf(TimerStatus.LONG_BREAK, TimerStatus.SHORT_BREAK)) {
+                startBreakTimer(timeLeft)
+            } else {
+                startPomodoroTimer(timeLeft)
+            }
         }
     }
 
