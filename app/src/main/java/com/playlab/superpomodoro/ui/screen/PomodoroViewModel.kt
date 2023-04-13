@@ -69,9 +69,9 @@ class PomodoroViewModel: ViewModel() {
                 setTimeLeft(timeLeft - 1000)
                 if (timeLeft <= 0) {
                     if(pomodoroCount == 4) setPomodoroCount(0)
-                        setTimeStatus(TimerStatus.POMODORO)
-                        destroyTimer()
-                        startPomodoroTimer(pomodoroDuration)
+                    setTimeStatus(TimerStatus.POMODORO)
+                    destroyTimer()
+                    startPomodoroTimer(pomodoroDuration)
                 }
             }
         }, 0, 1000)
