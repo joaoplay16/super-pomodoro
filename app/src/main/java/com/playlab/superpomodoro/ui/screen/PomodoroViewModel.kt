@@ -28,6 +28,9 @@ class PomodoroViewModel: ViewModel() {
     val timerStatus: MutableLiveData<TimerStatus>
         get() = _timerStatus
 
+    private var _isRunning  = mutableStateOf(false)
+    val isRunning by _isRunning
+
     fun startTimer() {
         if(timer == null) { // Avoid creation of multiple instances of Timer
             if (timerStatus.value in arrayOf(TimerStatus.LONG_BREAK, TimerStatus.SHORT_BREAK)) {
@@ -106,5 +109,9 @@ class PomodoroViewModel: ViewModel() {
 
     fun setTimeStatus(timeStatus: TimerStatus){
         _timerStatus.postValue( timeStatus)
+    }
+
+    fun setRunning(running: Boolean){
+        _isRunning.value = running
     }
 }
