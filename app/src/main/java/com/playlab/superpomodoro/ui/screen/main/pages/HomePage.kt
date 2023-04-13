@@ -16,11 +16,8 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLifecycleOwner
@@ -46,20 +43,20 @@ fun HomePage(
     modifier: Modifier = Modifier,
     onSettingsClick: () -> Unit,
     pomodoroViewModel: PomodoroViewModel?
-    ) {
+) {
 
     val pomodoroCount = pomodoroViewModel?.pomodoroCount
     val timerStatus = pomodoroViewModel?.timerStatus?.value
     val timeLeft = pomodoroViewModel?.timeLeft
 
-    var isRunning by remember { mutableStateOf(false) }
+    val isRunning = pomodoroViewModel?.isRunning
 
     val currentTimerValue = remember {
-            mutableStateMapOf(
-                TimerStatus.POMODORO to pomodoroViewModel?.pomodoroDuration,
-                TimerStatus.SHORT_BREAK to pomodoroViewModel?.shortBreakDuration,
-                TimerStatus.LONG_BREAK to pomodoroViewModel?.longBreakDuration
-            )
+        mutableStateMapOf(
+            TimerStatus.POMODORO to pomodoroViewModel?.pomodoroDuration,
+            TimerStatus.SHORT_BREAK to pomodoroViewModel?.shortBreakDuration,
+            TimerStatus.LONG_BREAK to pomodoroViewModel?.longBreakDuration
+        )
     }
 
     pomodoroViewModel?.timerStatus?.observe(LocalLifecycleOwner.current){
@@ -98,20 +95,20 @@ fun HomePage(
 
             StopButton(
                 onClick = {
-                    isRunning = false
                     pomodoroViewModel?.stopTimer()
+                    pomodoroViewModel?.setRunning(false)
                 })
             Spacer(Modifier.padding(end = 8.dp))
 
-            if(isRunning){
+            if(isRunning == true){
                 PauseButton(onClick = {
-                    pomodoroViewModel?.pauseTimer()
-                    isRunning = false
+                    pomodoroViewModel.pauseTimer()
+                    pomodoroViewModel.setRunning(false)
                 })
             }else{
                 ResumeButton(onClick = {
                     pomodoroViewModel?.startTimer()
-                    isRunning = true
+                    pomodoroViewModel?.setRunning(true)
                 })
             }
 
