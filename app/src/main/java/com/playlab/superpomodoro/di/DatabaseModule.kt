@@ -5,6 +5,9 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStoreFile
+import com.playlab.superpomodoro.data.preferences.PreferencesDataStore
+import com.playlab.superpomodoro.repository.DefaultPreferencesRepository
+import com.playlab.superpomodoro.repository.PreferencesRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,4 +28,11 @@ object DatabaseModule {
                 appContext.preferencesDataStoreFile("settings")
         }
     )
+
+    @Provides
+    @Singleton
+    fun providePreferencesRepository(
+        dataStore: PreferencesDataStore
+    ): PreferencesRepository =
+        DefaultPreferencesRepository(dataStore)
 }
