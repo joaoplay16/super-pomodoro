@@ -114,4 +114,12 @@ class PomodoroViewModel: ViewModel() {
     fun setRunning(running: Boolean){
         _isRunning.value = running
     }
+
+    fun setShortBreakDuration(duration: Long){
+        _shortBreakDuration.value = duration
+    }
+
+    fun setLongBreakDuration(duration: Long){
+        _longBreakDuration.value = duration
+    }
 }

@@ -2,7 +2,13 @@ package com.playlab.superpomodoro.ui.screen.settings
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
@@ -22,17 +28,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.playlab.superpomodoro.R
-import com.playlab.superpomodoro.ui.components.TimeSelectorDialog
 import com.playlab.superpomodoro.ui.components.SettingsCheckBox
 import com.playlab.superpomodoro.ui.components.TextLabel
 import com.playlab.superpomodoro.ui.components.TimeInput
+import com.playlab.superpomodoro.ui.components.TimeSelectorDialog
 import com.playlab.superpomodoro.ui.screen.DevicesPreviews
+import com.playlab.superpomodoro.ui.screen.PomodoroViewModel
 import com.playlab.superpomodoro.ui.theme.SuperPomodoroTheme
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.minutes
 
 @Composable
 fun SettingsScreen(
     modifier: Modifier = Modifier,
     onArrowBackPressed: ()  -> Unit,
+    pomodoroViewModel: PomodoroViewModel?
 ) {
     Scaffold(
         topBar = {
@@ -69,7 +79,6 @@ fun SettingsScreen(
         var enableSound by remember { mutableStateOf(false) }
         var enableVibration by remember { mutableStateOf(false) }
 
-
         Column(
             modifier = modifier
                 .fillMaxSize()
@@ -78,24 +87,38 @@ fun SettingsScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
+            val pomodoroLabel = remember { R.string.pomodoro }
+            val shortBreakLabel =  remember { R.string.pomodoro_short_break }
+            val longBreakLabel = remember { R.string.pomodoro_Long_break }
+
+            val pomodoroValue = pomodoroViewModel?.timeLeft?.milliseconds?.inWholeMinutes?.toInt() ?: 0
+            val shortBreakValue = pomodoroViewModel?.shortBreakDuration?.milliseconds?.inWholeMinutes?.toInt() ?: 0
+            val longBreakValue = pomodoroViewModel?.longBreakDuration?.milliseconds?.inWholeMinutes?.toInt() ?: 0
+
             var showInputTimeDialog by remember {
-                mutableStateOf(Pair("", false))
+                mutableStateOf(Pair(0, false))
             }
 
             if(showInputTimeDialog.second){
                 TimeSelectorDialog(
-                    label = showInputTimeDialog.first,
-                    value = 1,
-                    onValueChange = { },
-                    onDismissRequest = { showInputTimeDialog = Pair("", false) }
+                    label = stringResource(id = showInputTimeDialog.first).uppercase(),
+                    value = when(showInputTimeDialog.first){
+                        shortBreakLabel -> shortBreakValue
+                        longBreakLabel -> longBreakValue
+                        else -> pomodoroValue
+                    },
+                    onValueChange = { time ->
+                        when(showInputTimeDialog.first){
+                            shortBreakLabel -> pomodoroViewModel?.setShortBreakDuration(time.minutes.inWholeMilliseconds)
+                            longBreakLabel -> pomodoroViewModel?.setLongBreakDuration(time.minutes.inWholeMilliseconds)
+                            else -> pomodoroViewModel?.setTimeLeft(time.minutes.inWholeMilliseconds)
+                        }
+                    },
+                    onDismissRequest = { showInputTimeDialog = Pair(0, false) }
                 )
             }
 
             ConstraintLayout{
-
-                val pomodoroLabel = stringResource(id = R.string.pomodoro).uppercase()
-                val breakLabel = stringResource(id = R.string.pomodoro_short_break).uppercase()
-                val longBreakLabel = stringResource(id = R.string.pomodoro_Long_break).uppercase()
 
                 val (
                     durationLabelRef,
@@ -123,16 +146,20 @@ fun SettingsScreen(
                         },
                 ) {
                     TimeInput(
-                        label = pomodoroLabel,
+                        value = pomodoroValue.toString().padStart(2, '0'),
+                        label = stringResource(id = pomodoroLabel).uppercase(),
                         onClick = { showInputTimeDialog = Pair(pomodoroLabel, true) }
                     )
                     Spacer(Modifier.padding(end = 12.dp))
                     TimeInput(
-                        label = breakLabel,
-                        onClick = { showInputTimeDialog = Pair(breakLabel, true) }
+                        value = shortBreakValue.toString().padStart(2, '0'),
+                        label = stringResource(id = shortBreakLabel).uppercase(),
+                        onClick = { showInputTimeDialog = Pair(shortBreakLabel, true) }
                     )
                     Spacer(Modifier.padding(end = 12.dp))
-                    TimeInput(label = longBreakLabel,
+                    TimeInput(
+                        value = longBreakValue.toString().padStart(2, '0'),
+                        label = stringResource(id = longBreakLabel).uppercase(),
                         onClick = { showInputTimeDialog = Pair(longBreakLabel, true) }
                     )
                 }
@@ -176,7 +203,10 @@ fun SettingsScreen(
 fun SettingsScreenPreview() {
     SuperPomodoroTheme(false) {
         Surface {
-            SettingsScreen(onArrowBackPressed = {})
+            SettingsScreen(
+                onArrowBackPressed = {},
+                pomodoroViewModel = null
+            )
         }
     }
 }

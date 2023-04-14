@@ -63,9 +63,12 @@ fun DefaultNavHost(
         }
 
         composable(ScreenRoutes.Settings.name){
-            SettingsScreen(onArrowBackPressed = {
-                navController.popBackStack()
-            })
+            SettingsScreen(
+                onArrowBackPressed = {
+                    navController.popBackStack()
+                },
+                pomodoroViewModel = pomodoroViewModel
+            )
         }
     }
 }
