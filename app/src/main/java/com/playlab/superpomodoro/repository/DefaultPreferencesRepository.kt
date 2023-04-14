@@ -23,27 +23,27 @@ class DefaultPreferencesRepository @Inject constructor(
         preferencesDataStore.allowVibration(allowed)
     }
 
-    override fun pomodoroDuration(): Flow<Int?> {
+    override fun pomodoroDuration(): Flow<Long?> {
         return preferencesDataStore.pomodoroDuration
     }
 
-    override suspend fun setPomodoroDuration(duration: Int) {
+    override suspend fun setPomodoroDuration(duration: Long) {
         preferencesDataStore.setPomodoroDuration(duration)
     }
 
-    override fun shortBreakDuration(): Flow<Int?> {
+    override fun shortBreakDuration(): Flow<Long?> {
        return preferencesDataStore.shortBreakDuration
     }
 
-    override suspend fun setShortBreakDuration(duration: Int) {
+    override suspend fun setShortBreakDuration(duration: Long) {
         preferencesDataStore.setShortBreakDuration(duration)
     }
 
-    override fun longBreakDuration(): Flow<Int?> {
+    override fun longBreakDuration(): Flow<Long?> {
         return preferencesDataStore.longBreakDuration
     }
 
-    override suspend fun setLongBreakDuration(duration: Int) {
+    override suspend fun setLongBreakDuration(duration: Long) {
         preferencesDataStore.setLongBreakDuration(duration)
     }
 }

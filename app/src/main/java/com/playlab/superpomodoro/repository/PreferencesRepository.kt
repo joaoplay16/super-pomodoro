@@ -10,12 +10,12 @@ interface PreferencesRepository{
     fun isVibrationAllowed(): Flow<Boolean?>
     suspend fun allowVibration(allowed: Boolean)
 
-    fun pomodoroDuration(): Flow<Int?>
-    suspend fun setPomodoroDuration(duration: Int)
+    fun pomodoroDuration(): Flow<Long?>
+    suspend fun setPomodoroDuration(duration: Long)
 
-    fun shortBreakDuration(): Flow<Int?>
-    suspend fun setShortBreakDuration(duration: Int)
+    fun shortBreakDuration(): Flow<Long?>
+    suspend fun setShortBreakDuration(duration: Long)
 
-    fun longBreakDuration(): Flow<Int?>
-    suspend fun setLongBreakDuration(duration: Int)
+    fun longBreakDuration(): Flow<Long?>
+    suspend fun setLongBreakDuration(duration: Long)
 }
