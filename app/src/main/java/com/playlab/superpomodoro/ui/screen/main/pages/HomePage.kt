@@ -1,6 +1,5 @@
 package com.playlab.superpomodoro.ui.screen.main.pages
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,10 +15,12 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -36,6 +37,7 @@ import com.playlab.superpomodoro.ui.screen.PomodoroViewModel
 import com.playlab.superpomodoro.ui.screen.TimerStatus
 import com.playlab.superpomodoro.ui.theme.Purple400
 import com.playlab.superpomodoro.ui.theme.SuperPomodoroTheme
+import com.playlab.superpomodoro.util.SoundEffects
 import com.playlab.superpomodoro.util.TimeUtil
 
 @Composable
@@ -59,8 +61,19 @@ fun HomePage(
         )
     }
 
-    pomodoroViewModel?.timerStatus?.observe(LocalLifecycleOwner.current){
-        Log.d("OBSERVER", it.name)
+    val context = LocalContext.current
+    val localLifecycleOwner = LocalLifecycleOwner.current
+
+    val soundEffects = remember {
+        SoundEffects(context)
+    }
+
+    LaunchedEffect(key1 = null){
+        pomodoroViewModel?.timerStatus?.observe(localLifecycleOwner){
+            if (pomodoroViewModel.isRunning){
+                soundEffects.playSound(R.raw.microwave_oven_notif)
+            }
+        }
     }
 
     Column(
