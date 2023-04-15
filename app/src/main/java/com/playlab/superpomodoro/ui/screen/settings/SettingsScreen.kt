@@ -16,6 +16,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,6 +35,9 @@ import com.playlab.superpomodoro.ui.components.TimeInput
 import com.playlab.superpomodoro.ui.components.TimeSelectorDialog
 import com.playlab.superpomodoro.ui.screen.DevicesPreviews
 import com.playlab.superpomodoro.ui.screen.PomodoroViewModel
+import com.playlab.superpomodoro.ui.screen.PomodoroViewModel.Companion.DEFAULT_LONG_BREAK_DURATION
+import com.playlab.superpomodoro.ui.screen.PomodoroViewModel.Companion.DEFAULT_POMODORO_DURATION
+import com.playlab.superpomodoro.ui.screen.PomodoroViewModel.Companion.DEFAULT_SHORT_BREAK_DURATION
 import com.playlab.superpomodoro.ui.theme.SuperPomodoroTheme
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
@@ -91,9 +95,15 @@ fun SettingsScreen(
             val shortBreakLabel =  remember { R.string.pomodoro_short_break }
             val longBreakLabel = remember { R.string.pomodoro_Long_break }
 
-            val pomodoroValue = pomodoroViewModel?.timeLeft?.milliseconds?.inWholeMinutes?.toInt() ?: 0
-            val shortBreakValue = pomodoroViewModel?.shortBreakDuration?.milliseconds?.inWholeMinutes?.toInt() ?: 0
-            val longBreakValue = pomodoroViewModel?.longBreakDuration?.milliseconds?.inWholeMinutes?.toInt() ?: 0
+            val pomodoroValue = pomodoroViewModel?.pomodoroDuration
+                ?.collectAsState(null)?.value?.milliseconds?.inWholeMinutes
+                ?.toInt() ?: DEFAULT_POMODORO_DURATION
+            val shortBreakValue = pomodoroViewModel?.shortBreakDuration
+                ?.collectAsState(null)?.value?.milliseconds?.inWholeMinutes
+                ?.toInt() ?: DEFAULT_SHORT_BREAK_DURATION
+            val longBreakValue = pomodoroViewModel?.longBreakDuration
+                ?.collectAsState(null)?.value?.milliseconds?.inWholeMinutes
+                ?.toInt() ?: DEFAULT_LONG_BREAK_DURATION
 
             var showInputTimeDialog by remember {
                 mutableStateOf(Pair(0, false))
@@ -111,7 +121,10 @@ fun SettingsScreen(
                         when(showInputTimeDialog.first){
                             shortBreakLabel -> pomodoroViewModel?.setShortBreakDuration(time.minutes.inWholeMilliseconds)
                             longBreakLabel -> pomodoroViewModel?.setLongBreakDuration(time.minutes.inWholeMilliseconds)
-                            else -> pomodoroViewModel?.setTimeLeft(time.minutes.inWholeMilliseconds)
+                            else -> {
+                                pomodoroViewModel?.setTimeLeft(time.minutes.inWholeMilliseconds)
+                                pomodoroViewModel?.setPomodoroDuration(time.minutes.inWholeMilliseconds)
+                            }
                         }
                     },
                     onDismissRequest = { showInputTimeDialog = Pair(0, false) }

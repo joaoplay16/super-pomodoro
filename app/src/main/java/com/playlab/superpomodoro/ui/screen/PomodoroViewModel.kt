@@ -4,21 +4,41 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.playlab.superpomodoro.repository.PreferencesRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import java.util.Timer
 import java.util.TimerTask
+import javax.inject.Inject
 import kotlin.time.Duration.Companion.minutes
 
-class PomodoroViewModel: ViewModel() {
+@HiltViewModel
+class PomodoroViewModel @Inject constructor(
+    private val preferencesRepository: PreferencesRepository
+) : ViewModel() {
+
+    companion object {
+        const val DEFAULT_POMODORO_DURATION = 25
+        const val DEFAULT_SHORT_BREAK_DURATION = 5
+        const val DEFAULT_LONG_BREAK_DURATION = 15
+    }
+
     private var timer: Timer? = null
 
-    private var _pomodoroDuration = mutableStateOf(25.minutes.inWholeMilliseconds)
-    val pomodoroDuration by _pomodoroDuration
-    private var _shortBreakDuration = mutableStateOf(5.minutes.inWholeMilliseconds)
-    val shortBreakDuration by _shortBreakDuration
-    private var _longBreakDuration = mutableStateOf(15.minutes.inWholeMilliseconds)
-    val longBreakDuration by _longBreakDuration
+    val pomodoroDuration = preferencesRepository.pomodoroDuration()
+    private val _pomodoroDuration =
+        mutableStateOf(DEFAULT_POMODORO_DURATION.minutes.inWholeMilliseconds)
 
-    private val _timeLeft = mutableStateOf(pomodoroDuration)
+    val shortBreakDuration = preferencesRepository.shortBreakDuration()
+    private val _shortBreakDuration =
+        mutableStateOf(DEFAULT_SHORT_BREAK_DURATION.minutes.inWholeMilliseconds)
+
+    val longBreakDuration = preferencesRepository.longBreakDuration()
+    private val _longBreakDuration =
+        mutableStateOf(DEFAULT_LONG_BREAK_DURATION.minutes.inWholeMilliseconds)
+
+    private val _timeLeft = mutableStateOf(_pomodoroDuration.value)
     val timeLeft by _timeLeft
 
     private val _pomodoroCount = mutableStateOf(0)
@@ -30,6 +50,27 @@ class PomodoroViewModel: ViewModel() {
 
     private var _isRunning  = mutableStateOf(false)
     val isRunning by _isRunning
+
+    init {
+        viewModelScope.launch {
+            pomodoroDuration.collect{
+                it?.let {
+                    setTimeLeft(it)
+                    _pomodoroDuration.value = it
+                }
+            }
+            shortBreakDuration.collect{
+                it?.let {
+                    _shortBreakDuration.value = it
+                }
+            }
+            longBreakDuration.collect{
+                it?.let {
+                    _longBreakDuration.value = it
+                }
+            }
+        }
+    }
 
     fun startTimer() {
         if(timer == null) { // Avoid creation of multiple instances of Timer
@@ -53,11 +94,11 @@ class PomodoroViewModel: ViewModel() {
                     setPomodoroCount( pomodoroCount + 1 )
 
                     if(pomodoroCount < 4){
-                        startBreakTimer(shortBreakDuration)
+                        startBreakTimer(_shortBreakDuration.value)
                         setTimeStatus(TimerStatus.SHORT_BREAK)
 
                     }else{
-                        startBreakTimer(longBreakDuration)
+                        startBreakTimer(_longBreakDuration.value)
                         setTimeStatus(TimerStatus.LONG_BREAK)
                     }
                 }
@@ -75,7 +116,7 @@ class PomodoroViewModel: ViewModel() {
                     if(pomodoroCount == 4) setPomodoroCount(0)
                     setTimeStatus(TimerStatus.POMODORO)
                     destroyTimer()
-                    startPomodoroTimer(pomodoroDuration)
+                    startPomodoroTimer(_pomodoroDuration.value)
                 }
             }
         }, 0, 1000)
@@ -83,14 +124,14 @@ class PomodoroViewModel: ViewModel() {
 
 
     fun pauseTimer(){
-       destroyTimer()
+        destroyTimer()
     }
 
     fun stopTimer(){
         destroyTimer()
 
         setPomodoroCount(0)
-        setTimeLeft(pomodoroDuration)
+        setTimeLeft(_pomodoroDuration.value)
         setTimeStatus(TimerStatus.POMODORO)
     }
 
@@ -115,11 +156,21 @@ class PomodoroViewModel: ViewModel() {
         _isRunning.value = running
     }
 
+    fun setPomodoroDuration(duration: Long){
+        viewModelScope.launch {
+            preferencesRepository.setPomodoroDuration(duration)
+        }
+    }
+
     fun setShortBreakDuration(duration: Long){
-        _shortBreakDuration.value = duration
+        viewModelScope.launch {
+            preferencesRepository.setShortBreakDuration(duration)
+        }
     }
 
     fun setLongBreakDuration(duration: Long){
-        _longBreakDuration.value = duration
+        viewModelScope.launch {
+            preferencesRepository.setLongBreakDuration(duration)
+        }
     }
 }

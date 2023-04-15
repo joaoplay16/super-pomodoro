@@ -18,7 +18,9 @@ import com.playlab.superpomodoro.ui.screen.ScreenRoutes
 import com.playlab.superpomodoro.ui.screen.main.MainScreen
 import com.playlab.superpomodoro.ui.screen.settings.SettingsScreen
 import com.playlab.superpomodoro.ui.theme.SuperPomodoroTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val pomodoroViewModel: PomodoroViewModel by viewModels()

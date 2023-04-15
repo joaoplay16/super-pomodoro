@@ -16,6 +16,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -51,13 +52,16 @@ fun HomePage(
     val timerStatus = pomodoroViewModel?.timerStatus?.value
     val timeLeft = pomodoroViewModel?.timeLeft
 
+    val pomodoroDuration = pomodoroViewModel?.pomodoroDuration?.collectAsState(initial = null)?.value
+    val shortBreakDuration = pomodoroViewModel?.pomodoroDuration?.collectAsState(initial = null)?.value
+    val longBreakDuration = pomodoroViewModel?.pomodoroDuration?.collectAsState(initial = null)?.value
     val isRunning = pomodoroViewModel?.isRunning
 
     val currentTimerValue = remember {
         mutableStateMapOf(
-            TimerStatus.POMODORO to pomodoroViewModel?.pomodoroDuration,
-            TimerStatus.SHORT_BREAK to pomodoroViewModel?.shortBreakDuration,
-            TimerStatus.LONG_BREAK to pomodoroViewModel?.longBreakDuration
+            TimerStatus.POMODORO to pomodoroDuration,
+            TimerStatus.SHORT_BREAK to shortBreakDuration,
+            TimerStatus.LONG_BREAK to longBreakDuration
         )
     }
 
