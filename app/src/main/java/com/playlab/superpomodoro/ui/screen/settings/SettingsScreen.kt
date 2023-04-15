@@ -80,8 +80,10 @@ fun SettingsScreen(
         }
     ){ paddingValues ->
 
-        var enableSound by remember { mutableStateOf(false) }
-        var enableVibration by remember { mutableStateOf(false) }
+        val isSoundAllowed =
+            pomodoroViewModel?.isSoundAllowed?.collectAsState(null)?.value ?: true
+        val isVibrationAllowed =
+            pomodoroViewModel?.isVibrationAllowed?.collectAsState(null)?.value ?: false
 
         Column(
             modifier = modifier
@@ -193,8 +195,8 @@ fun SettingsScreen(
                             start.linkTo(parent.start)
                         },
                     label = stringResource(id = R.string.sound_label),
-                    checked = enableSound,
-                    onCheckChanged = { enableSound = it}
+                    checked = isSoundAllowed,
+                    onCheckChanged = { pomodoroViewModel?.allowSound(it)}
                 )
                 SettingsCheckBox(
                     modifier = Modifier
@@ -203,8 +205,8 @@ fun SettingsScreen(
                             start.linkTo(soundCheckBoxRef.end, margin = 8.dp)
                         },
                     label = stringResource(id = R.string.vibration_label),
-                    checked = enableVibration,
-                    onCheckChanged = { enableVibration = it }
+                    checked = isVibrationAllowed,
+                    onCheckChanged = { pomodoroViewModel?.allowVibration(it) }
                 )
             }
         }

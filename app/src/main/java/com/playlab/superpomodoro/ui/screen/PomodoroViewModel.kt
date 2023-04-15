@@ -26,6 +26,9 @@ class PomodoroViewModel @Inject constructor(
 
     private var timer: Timer? = null
 
+    val isSoundAllowed = preferencesRepository.isSoundAllowed()
+    val isVibrationAllowed = preferencesRepository.isVibrationAllowed()
+
     val pomodoroDuration = preferencesRepository.pomodoroDuration()
     private val _pomodoroDuration =
         mutableStateOf(DEFAULT_POMODORO_DURATION.minutes.inWholeMilliseconds)
@@ -171,6 +174,18 @@ class PomodoroViewModel @Inject constructor(
     fun setLongBreakDuration(duration: Long){
         viewModelScope.launch {
             preferencesRepository.setLongBreakDuration(duration)
+        }
+    }
+
+    fun allowSound(allowed: Boolean){
+        viewModelScope.launch {
+            preferencesRepository.allowSound(allowed)
+        }
+    }
+
+    fun allowVibration(allowed: Boolean){
+        viewModelScope.launch {
+            preferencesRepository.allowVibration(allowed)
         }
     }
 }
