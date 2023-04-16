@@ -2,6 +2,7 @@ package com.playlab.superpomodoro.ui.screen
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -68,7 +69,7 @@ class PomodoroViewModel @Inject constructor(
     val pomodoroCount by _pomodoroCount
 
     private val _timerStatus = MutableLiveData(TimerStatus.POMODORO)
-    val timerStatus: MutableLiveData<TimerStatus>
+    val timerStatus: LiveData<TimerStatus>
         get() = _timerStatus
 
     private var _isRunning  = mutableStateOf(false)
