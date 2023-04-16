@@ -15,14 +15,11 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -35,10 +32,12 @@ import com.playlab.superpomodoro.ui.components.StopButton
 import com.playlab.superpomodoro.ui.components.TimeText
 import com.playlab.superpomodoro.ui.screen.DevicesPreviews
 import com.playlab.superpomodoro.ui.screen.PomodoroViewModel
+import com.playlab.superpomodoro.ui.screen.PomodoroViewModel.Companion.DEFAULT_LONG_BREAK_DURATION
+import com.playlab.superpomodoro.ui.screen.PomodoroViewModel.Companion.DEFAULT_POMODORO_DURATION
+import com.playlab.superpomodoro.ui.screen.PomodoroViewModel.Companion.DEFAULT_SHORT_BREAK_DURATION
 import com.playlab.superpomodoro.ui.screen.TimerStatus
 import com.playlab.superpomodoro.ui.theme.Purple400
 import com.playlab.superpomodoro.ui.theme.SuperPomodoroTheme
-import com.playlab.superpomodoro.util.SoundEffects
 import com.playlab.superpomodoro.util.TimeUtil
 
 @Composable
@@ -52,9 +51,15 @@ fun HomePage(
     val timerStatus = pomodoroViewModel?.timerStatus?.value
     val timeLeft = pomodoroViewModel?.timeLeft
 
-    val pomodoroDuration = pomodoroViewModel?.pomodoroDuration?.collectAsState(initial = null)?.value
-    val shortBreakDuration = pomodoroViewModel?.pomodoroDuration?.collectAsState(initial = null)?.value
-    val longBreakDuration = pomodoroViewModel?.pomodoroDuration?.collectAsState(initial = null)?.value
+    val pomodoroDuration = pomodoroViewModel?.pomodoroDurationPreference
+        ?.collectAsState(initial = null)?.value
+        ?: DEFAULT_POMODORO_DURATION
+    val shortBreakDuration = pomodoroViewModel?.shortBreakDurationPreference
+        ?.collectAsState(initial = null)?.value
+        ?: DEFAULT_SHORT_BREAK_DURATION
+    val longBreakDuration = pomodoroViewModel?.longBreakDurationPreference
+        ?.collectAsState(initial = null)?.value
+        ?: DEFAULT_LONG_BREAK_DURATION
     val isRunning = pomodoroViewModel?.isRunning
 
     val currentTimerValue = remember {
@@ -63,21 +68,6 @@ fun HomePage(
             TimerStatus.SHORT_BREAK to shortBreakDuration,
             TimerStatus.LONG_BREAK to longBreakDuration
         )
-    }
-
-    val context = LocalContext.current
-    val localLifecycleOwner = LocalLifecycleOwner.current
-
-    val soundEffects = remember {
-        SoundEffects(context)
-    }
-
-    LaunchedEffect(key1 = null){
-        pomodoroViewModel?.timerStatus?.observe(localLifecycleOwner){
-            if (pomodoroViewModel.isRunning){
-                soundEffects.playSound(R.raw.microwave_oven_notif)
-            }
-        }
     }
 
     Column(

@@ -22,22 +22,42 @@ class PomodoroViewModel @Inject constructor(
         const val DEFAULT_POMODORO_DURATION = 25
         const val DEFAULT_SHORT_BREAK_DURATION = 5
         const val DEFAULT_LONG_BREAK_DURATION = 15
+        const val DEFAULT_SOUND_PREFERENCE = true
+        const val DEFAULT_VIBRATION_PREFERENCE = false
     }
 
     private var timer: Timer? = null
 
-    val isSoundAllowed = preferencesRepository.isSoundAllowed()
-    val isVibrationAllowed = preferencesRepository.isVibrationAllowed()
+    val soundPreference = preferencesRepository.isSoundAllowed()
+    val vibrationPreference = preferencesRepository.isVibrationAllowed()
 
-    val pomodoroDuration = preferencesRepository.pomodoroDuration()
+    val pomodoroDurationPreference = preferencesRepository.pomodoroDuration()
+    val shortBreakDurationPreference = preferencesRepository.shortBreakDuration()
+    val longBreakDurationPreference = preferencesRepository.longBreakDuration()
+
+    fun initPomodoroValues(
+        pomodoroDuration: Long?,
+        shortBreakDuration: Long?,
+        longBreakDuration: Long?
+    ){
+        pomodoroDuration?.let {
+            setTimeLeft(it)
+            _pomodoroDuration.value = it
+        }
+        shortBreakDuration?.let {
+            _shortBreakDuration.value = it
+        }
+        longBreakDuration?.let {
+            _longBreakDuration.value = it
+        }
+    }
+
     private val _pomodoroDuration =
         mutableStateOf(DEFAULT_POMODORO_DURATION.minutes.inWholeMilliseconds)
 
-    val shortBreakDuration = preferencesRepository.shortBreakDuration()
     private val _shortBreakDuration =
         mutableStateOf(DEFAULT_SHORT_BREAK_DURATION.minutes.inWholeMilliseconds)
 
-    val longBreakDuration = preferencesRepository.longBreakDuration()
     private val _longBreakDuration =
         mutableStateOf(DEFAULT_LONG_BREAK_DURATION.minutes.inWholeMilliseconds)
 
@@ -53,27 +73,6 @@ class PomodoroViewModel @Inject constructor(
 
     private var _isRunning  = mutableStateOf(false)
     val isRunning by _isRunning
-
-    init {
-        viewModelScope.launch {
-            pomodoroDuration.collect{
-                it?.let {
-                    setTimeLeft(it)
-                    _pomodoroDuration.value = it
-                }
-            }
-            shortBreakDuration.collect{
-                it?.let {
-                    _shortBreakDuration.value = it
-                }
-            }
-            longBreakDuration.collect{
-                it?.let {
-                    _longBreakDuration.value = it
-                }
-            }
-        }
-    }
 
     fun startTimer() {
         if(timer == null) { // Avoid creation of multiple instances of Timer
@@ -124,7 +123,6 @@ class PomodoroViewModel @Inject constructor(
             }
         }, 0, 1000)
     }
-
 
     fun pauseTimer(){
         destroyTimer()

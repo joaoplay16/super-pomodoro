@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -18,6 +20,7 @@ import com.playlab.superpomodoro.ui.screen.ScreenRoutes
 import com.playlab.superpomodoro.ui.screen.main.MainScreen
 import com.playlab.superpomodoro.ui.screen.settings.SettingsScreen
 import com.playlab.superpomodoro.ui.theme.SuperPomodoroTheme
+import com.playlab.superpomodoro.util.SoundEffects
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -27,6 +30,8 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val soundEffects = SoundEffects(this)
         setContent {
             SuperPomodoroTheme(false) {
                 Surface(
@@ -38,6 +43,19 @@ class MainActivity : ComponentActivity() {
                     )
                 }
             }
+
+            val pomodoroDuration by pomodoroViewModel.pomodoroDurationPreference
+                .collectAsState(initial = null)
+            val shortBreakDuration by pomodoroViewModel.shortBreakDurationPreference
+                .collectAsState(initial = null)
+            val longBreakDuration by pomodoroViewModel.longBreakDurationPreference
+                .collectAsState(initial = null)
+
+            pomodoroViewModel.initPomodoroValues(
+                pomodoroDuration = pomodoroDuration,
+                shortBreakDuration = shortBreakDuration,
+                longBreakDuration = longBreakDuration
+            )
         }
     }
 }

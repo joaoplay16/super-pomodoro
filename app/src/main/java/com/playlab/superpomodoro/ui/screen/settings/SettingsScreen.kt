@@ -81,9 +81,9 @@ fun SettingsScreen(
     ){ paddingValues ->
 
         val isSoundAllowed =
-            pomodoroViewModel?.isSoundAllowed?.collectAsState(null)?.value ?: true
+            pomodoroViewModel?.soundPreference?.collectAsState(null)?.value ?: true
         val isVibrationAllowed =
-            pomodoroViewModel?.isVibrationAllowed?.collectAsState(null)?.value ?: false
+            pomodoroViewModel?.vibrationPreference?.collectAsState(null)?.value ?: false
 
         Column(
             modifier = modifier
@@ -97,13 +97,13 @@ fun SettingsScreen(
             val shortBreakLabel =  remember { R.string.pomodoro_short_break }
             val longBreakLabel = remember { R.string.pomodoro_Long_break }
 
-            val pomodoroValue = pomodoroViewModel?.pomodoroDuration
+            val pomodoroValue = pomodoroViewModel?.pomodoroDurationPreference
                 ?.collectAsState(null)?.value?.milliseconds?.inWholeMinutes
                 ?.toInt() ?: DEFAULT_POMODORO_DURATION
-            val shortBreakValue = pomodoroViewModel?.shortBreakDuration
+            val shortBreakValue = pomodoroViewModel?.shortBreakDurationPreference
                 ?.collectAsState(null)?.value?.milliseconds?.inWholeMinutes
                 ?.toInt() ?: DEFAULT_SHORT_BREAK_DURATION
-            val longBreakValue = pomodoroViewModel?.longBreakDuration
+            val longBreakValue = pomodoroViewModel?.longBreakDurationPreference
                 ?.collectAsState(null)?.value?.milliseconds?.inWholeMinutes
                 ?.toInt() ?: DEFAULT_LONG_BREAK_DURATION
 
