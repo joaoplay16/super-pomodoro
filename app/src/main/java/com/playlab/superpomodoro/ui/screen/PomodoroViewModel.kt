@@ -39,7 +39,9 @@ class PomodoroViewModel @Inject constructor(
     fun initPomodoroValues(
         pomodoroDuration: Long?,
         shortBreakDuration: Long?,
-        longBreakDuration: Long?
+        longBreakDuration: Long?,
+        isSoundAllowed: Boolean?,
+        isVibrationAllowed: Boolean?
     ){
         pomodoroDuration?.let {
             setTimeLeft(it)
@@ -51,7 +53,18 @@ class PomodoroViewModel @Inject constructor(
         longBreakDuration?.let {
             _longBreakDuration.value = it
         }
+        isSoundAllowed?.let {
+            _isSoundAllowed.value = it
+        }
+        isVibrationAllowed?.let {
+            _isVibrationAllowed.value = it
+        }
     }
+    private val _isSoundAllowed = mutableStateOf(DEFAULT_SOUND_PREFERENCE)
+    val isSoundAllowed = _isSoundAllowed
+
+    private val _isVibrationAllowed = mutableStateOf(DEFAULT_VIBRATION_PREFERENCE)
+    val isVibrationAllowed = _isVibrationAllowed
 
     private val _pomodoroDuration =
         mutableStateOf(DEFAULT_POMODORO_DURATION.minutes.inWholeMilliseconds)
@@ -75,6 +88,10 @@ class PomodoroViewModel @Inject constructor(
     private var _isRunning  = mutableStateOf(false)
     val isRunning by _isRunning
 
+    private val _endOfCycle = MutableLiveData<TimerStatus?>(null)
+    val endOfCycle: LiveData<TimerStatus?>
+        get() = _endOfCycle
+
     fun startTimer() {
         if(timer == null) { // Avoid creation of multiple instances of Timer
             if (timerStatus.value in arrayOf(TimerStatus.LONG_BREAK, TimerStatus.SHORT_BREAK)) {
@@ -95,7 +112,7 @@ class PomodoroViewModel @Inject constructor(
                 if (timeLeft <= 0) {
                     destroyTimer()
                     setPomodoroCount( pomodoroCount + 1 )
-
+                    _endOfCycle.postValue(_timerStatus.value )
                     if(pomodoroCount < 4){
                         startBreakTimer(_shortBreakDuration.value)
                         setTimeStatus(TimerStatus.SHORT_BREAK)
@@ -116,6 +133,7 @@ class PomodoroViewModel @Inject constructor(
             override fun run() {
                 setTimeLeft(timeLeft - 1000)
                 if (timeLeft <= 0) {
+                    _endOfCycle.postValue(_timerStatus.value )
                     if(pomodoroCount == 4) setPomodoroCount(0)
                     setTimeStatus(TimerStatus.POMODORO)
                     destroyTimer()
@@ -135,6 +153,7 @@ class PomodoroViewModel @Inject constructor(
         setPomodoroCount(0)
         setTimeLeft(_pomodoroDuration.value)
         setTimeStatus(TimerStatus.POMODORO)
+        _endOfCycle.value = null
     }
 
     private fun destroyTimer() {

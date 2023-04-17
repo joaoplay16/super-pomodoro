@@ -21,6 +21,7 @@ import com.playlab.superpomodoro.ui.screen.main.MainScreen
 import com.playlab.superpomodoro.ui.screen.settings.SettingsScreen
 import com.playlab.superpomodoro.ui.theme.SuperPomodoroTheme
 import com.playlab.superpomodoro.util.SoundEffects
+import com.playlab.superpomodoro.util.VibratorUtil
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -44,18 +45,42 @@ class MainActivity : ComponentActivity() {
                 }
             }
 
-            val pomodoroDuration by pomodoroViewModel.pomodoroDurationPreference
+            val pomodoroDurationPreference by pomodoroViewModel.pomodoroDurationPreference
                 .collectAsState(initial = null)
-            val shortBreakDuration by pomodoroViewModel.shortBreakDurationPreference
+            val shortBreakDurationPreference by pomodoroViewModel.shortBreakDurationPreference
                 .collectAsState(initial = null)
-            val longBreakDuration by pomodoroViewModel.longBreakDurationPreference
+            val longBreakDurationPreference by pomodoroViewModel.longBreakDurationPreference
                 .collectAsState(initial = null)
 
+            val isSoundAllowedPreference = pomodoroViewModel.soundPreference
+                .collectAsState(null).value
+            val isVibrationAllowedPreference = pomodoroViewModel.vibrationPreference
+                .collectAsState(null).value
+
             pomodoroViewModel.initPomodoroValues(
-                pomodoroDuration = pomodoroDuration,
-                shortBreakDuration = shortBreakDuration,
-                longBreakDuration = longBreakDuration
+                pomodoroDuration = pomodoroDurationPreference,
+                shortBreakDuration = shortBreakDurationPreference,
+                longBreakDuration = longBreakDurationPreference,
+                isSoundAllowed = isSoundAllowedPreference,
+                isVibrationAllowed = isVibrationAllowedPreference
             )
+
+            val isRunning = pomodoroViewModel.isRunning
+            val isSoundAllowed by pomodoroViewModel.isSoundAllowed
+            val isVibrationAllowed by pomodoroViewModel.isVibrationAllowed
+
+            pomodoroViewModel.endOfCycle.observe(this@MainActivity){
+                it?.let {
+                    if (isRunning){
+                        if (isSoundAllowed) {
+                            soundEffects.playSound(R.raw.microwave_oven_notif)
+                        }
+                        if (isVibrationAllowed) {
+                            VibratorUtil.vibrate(this, 200)
+                        }
+                    }
+                }
+            }
         }
     }
 }
