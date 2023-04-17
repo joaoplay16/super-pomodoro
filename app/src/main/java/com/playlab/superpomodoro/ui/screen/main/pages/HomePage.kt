@@ -18,8 +18,6 @@ import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -42,6 +40,7 @@ import com.playlab.superpomodoro.ui.screen.TimerStatus
 import com.playlab.superpomodoro.ui.theme.Purple400
 import com.playlab.superpomodoro.ui.theme.SuperPomodoroTheme
 import com.playlab.superpomodoro.util.TimeUtil
+import kotlin.time.Duration.Companion.minutes
 
 @Composable
 fun HomePage(
@@ -56,21 +55,20 @@ fun HomePage(
 
     val pomodoroDuration = pomodoroViewModel?.pomodoroDurationPreference
         ?.collectAsState(initial = null)?.value
-        ?: DEFAULT_POMODORO_DURATION
+        ?: DEFAULT_POMODORO_DURATION.minutes.inWholeMilliseconds
     val shortBreakDuration = pomodoroViewModel?.shortBreakDurationPreference
         ?.collectAsState(initial = null)?.value
-        ?: DEFAULT_SHORT_BREAK_DURATION
+        ?: DEFAULT_SHORT_BREAK_DURATION.minutes.inWholeMilliseconds
     val longBreakDuration = pomodoroViewModel?.longBreakDurationPreference
         ?.collectAsState(initial = null)?.value
-        ?: DEFAULT_LONG_BREAK_DURATION
+        ?: DEFAULT_LONG_BREAK_DURATION.minutes.inWholeMilliseconds
     val isRunning = pomodoroViewModel?.isRunning
 
-    val currentTimerValue = remember {
-        mutableStateMapOf(
-            TimerStatus.POMODORO to pomodoroDuration,
-            TimerStatus.SHORT_BREAK to shortBreakDuration,
-            TimerStatus.LONG_BREAK to longBreakDuration
-        )
+    val currentTimerValue = when(timerStatus){
+        TimerStatus.POMODORO -> pomodoroDuration
+        TimerStatus.SHORT_BREAK -> shortBreakDuration
+        TimerStatus.LONG_BREAK -> longBreakDuration
+        else -> 0
     }
 
     Column(
@@ -100,7 +98,7 @@ fun HomePage(
         RemainingTimeAnimation(
             canvasSize = 250.dp,
             value = timeLeft?.toInt() ?: 0,
-            maxValue = currentTimerValue[timerStatus]?.toInt() ?: 0
+            maxValue = currentTimerValue.toInt()
         )
 
         Spacer(Modifier.padding(8.dp))
@@ -108,7 +106,6 @@ fun HomePage(
         Spacer(Modifier.padding(12.dp))
 
         Row {
-
             StopButton(
                 onClick = {
                     pomodoroViewModel?.stopTimer()
