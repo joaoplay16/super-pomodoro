@@ -1,12 +1,11 @@
 package com.playlab.superpomodoro.ui.screen.gameview
 
-import android.webkit.WebSettings
-import android.webkit.WebView
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.viewinterop.AndroidView
+import com.google.accompanist.web.WebView
+import com.google.accompanist.web.rememberWebViewState
 import com.playlab.superpomodoro.ui.theme.SuperPomodoroTheme
 
 @Composable
@@ -14,18 +13,14 @@ fun GameView(
     modifier: Modifier = Modifier,
     url: String
 ) {
-    AndroidView(
+    val state = rememberWebViewState(url)
+
+    WebView(
         modifier = modifier,
-        factory = { context ->
-            WebView(context).apply {
-                settings.javaScriptEnabled = true
-                settings.cacheMode = WebSettings.LOAD_DEFAULT
-                settings.domStorageEnabled =true
-                loadUrl(url)
-            }
-        },
-        update = { view ->
-            view.loadUrl(url)
+        state = state,
+        onCreated = {
+            it.settings.domStorageEnabled = true
+            it.settings.javaScriptEnabled = true
         }
     )
 }
