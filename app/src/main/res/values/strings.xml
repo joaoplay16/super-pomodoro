@@ -12,4 +12,5 @@
     <string name="alerts_label">Alerts</string>
     <string name="sound_label">Sound</string>
     <string name="vibration_label">Vibration</string>
+    <string name="game_item_image_description">Image of a game</string>
 </resources>

@@ -15,8 +15,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.playlab.superpomodoro.model.Game
 import com.playlab.superpomodoro.ui.screen.PomodoroViewModel
 import com.playlab.superpomodoro.ui.screen.ScreenRoutes
+import com.playlab.superpomodoro.ui.screen.gameview.GameView
 import com.playlab.superpomodoro.ui.screen.main.MainScreen
 import com.playlab.superpomodoro.ui.screen.settings.SettingsScreen
 import com.playlab.superpomodoro.ui.theme.SuperPomodoroTheme
@@ -103,6 +105,10 @@ fun DefaultNavHost(
                 onSettingsClick = {
                     navController.navigate(ScreenRoutes.Settings.name)
                 },
+                onGameSelected = {
+                    navController.currentBackStackEntry?.savedStateHandle?.set("game", it)
+                    navController.navigate(ScreenRoutes.GameView.name)
+                },
                 pomodoroViewModel = pomodoroViewModel
             )
         }
@@ -114,6 +120,18 @@ fun DefaultNavHost(
                 },
                 pomodoroViewModel = pomodoroViewModel
             )
+        }
+
+        composable(ScreenRoutes.GameView.name){
+            val game = navController
+                .previousBackStackEntry
+                ?.savedStateHandle
+                ?.get<Game>("game")
+
+            game?.let {
+
+            GameView(url = game.url)
+            }
         }
     }
 }
