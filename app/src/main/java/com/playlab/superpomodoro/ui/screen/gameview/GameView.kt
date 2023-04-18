@@ -1,5 +1,6 @@
 package com.playlab.superpomodoro.ui.screen.gameview
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -16,7 +17,7 @@ fun GameView(
     val state = rememberWebViewState(url)
 
     WebView(
-        modifier = modifier,
+        modifier = modifier.fillMaxSize(),
         state = state,
         onCreated = {
             it.settings.domStorageEnabled = true
