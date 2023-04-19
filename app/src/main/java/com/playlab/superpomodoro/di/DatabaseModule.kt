@@ -5,6 +5,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStoreFile
+import com.google.firebase.FirebaseApp
 import com.playlab.superpomodoro.data.preferences.PreferencesDataStore
 import com.playlab.superpomodoro.repository.DefaultPreferencesRepository
 import com.playlab.superpomodoro.repository.PreferencesRepository
@@ -35,4 +36,11 @@ object DatabaseModule {
         dataStore: PreferencesDataStore
     ): PreferencesRepository =
         DefaultPreferencesRepository(dataStore)
+
+    @Provides
+    @Singleton
+    fun provideFirebaseInstance(
+        @ApplicationContext context: Context
+    ) : FirebaseApp? =
+        FirebaseApp.initializeApp(context)
 }
