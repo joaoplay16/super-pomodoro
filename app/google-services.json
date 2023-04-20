@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "313019651018",
+    "project_id": "aplicativo-pomodoro",
+    "storage_bucket": "aplicativo-pomodoro.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:313019651018:android:3f7e24a67c9cf279de7533",
+        "android_client_info": {
+          "package_name": "com.playlab.superpomodoro"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "313019651018-216343hk6ovr10em0mtgs1up90uv405h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBPaGTeZ3cQaCv3trWDOWFzAnbeM9frUpE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "313019651018-216343hk6ovr10em0mtgs1up90uv405h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
