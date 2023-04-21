@@ -19,4 +19,8 @@
     <string name="login_screen_title">Login to start chatting</string>
     <string name="no_account_label">"Don't have an account? "</string>
     <string name="sign_up_here_label">Signup here</string>
+    <string name="register_screen_title">Register to start chatting</string>
+    <string name="input_username">Username</string>
+    <string name="input_repeat_password">Repeat password</string>
+    <string name="button_register">Register</string>
 </resources>
