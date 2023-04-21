@@ -111,7 +111,7 @@ fun SignupScreen(
 
 @DevicesPreviews
 @Composable
-fun PreviewFormInput() {
+fun PreviewSignupScreen() {
     SuperPomodoroTheme(false) {
         Surface {
             Column (
