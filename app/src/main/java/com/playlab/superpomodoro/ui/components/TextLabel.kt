@@ -21,13 +21,14 @@ fun TextLabel(
     text: String,
     textStyle: TextStyle = MaterialTheme.typography.body1,
     textColor: Color = MaterialTheme.colors.onSurface,
-    fontSize: TextUnit = dimensionResource(id = R.dimen.text_label_font_size).value.sp
+    fontSize: TextUnit = dimensionResource(id = R.dimen.text_label_font_size).value.sp,
+    maxLines: Int = 1,
 ) {
     Text(
         modifier =modifier,
         fontSize = fontSize,
         text = text,
-        maxLines = 1,
+        maxLines = maxLines,
         color = textColor,
         style = textStyle
     )
