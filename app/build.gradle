@@ -81,8 +81,10 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage-ktx:20.1.0'
     implementation 'com.google.firebase:firebase-analytics:21.2.1'
     implementation 'com.google.firebase:firebase-auth:21.2.0'
-
+    //Webview wrapper
     implementation "com.google.accompanist:accompanist-webview:0.31.0-alpha"
+    // Coil
+    implementation "io.coil-kt:coil-compose:2.0.0-rc02"
     // Tests
     testImplementation 'junit:junit:4.13.2'
     testImplementation "com.google.truth:truth:1.1.3"
