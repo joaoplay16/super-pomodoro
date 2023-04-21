@@ -13,4 +13,10 @@
     <string name="sound_label">Sound</string>
     <string name="vibration_label">Vibration</string>
     <string name="game_item_image_description">Image of a game</string>
+    <string name="button_login">Login</string>
+    <string name="input_password">Password</string>
+    <string name="input_email">E-mail</string>
+    <string name="login_screen_title">Login to start chatting</string>
+    <string name="no_account_label">"Don't have an account? "</string>
+    <string name="sign_up_here_label">Signup here</string>
 </resources>
