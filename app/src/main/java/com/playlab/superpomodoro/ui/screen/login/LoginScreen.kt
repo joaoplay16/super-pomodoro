@@ -17,6 +17,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Key
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -24,7 +28,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.playlab.superpomodoro.R
 import com.playlab.superpomodoro.ui.components.FormInput
 import com.playlab.superpomodoro.ui.components.TextLabel
@@ -35,9 +38,13 @@ import com.playlab.superpomodoro.ui.theme.SuperPomodoroTheme
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
-    chatViewModel: ChatViewModel? = hiltViewModel(),
+    chatViewModel: ChatViewModel?,
     onSignUpLabelClick: () -> Unit = {}
 ) {
+
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -53,9 +60,10 @@ fun LoginScreen(
             )
         }
         Spacer(modifier = Modifier.padding(12.dp))
+        //E-MAIL
         FormInput(
-            text = "",
-            onTextChange = {},
+            text = email,
+            onTextChange = { email = it },
             leadingIcon =  Icons.Default.Email,
             placeholder = stringResource(id = R.string.input_email),
             keyboardOptions = KeyboardOptions(
@@ -64,9 +72,10 @@ fun LoginScreen(
             )
         )
         Spacer(modifier = Modifier.padding(8.dp))
+        // PASSWORD
         FormInput(
-            text = "",
-            onTextChange = {},
+            text = password,
+            onTextChange = { password = it},
             leadingIcon =  Icons.Default.Key,
             placeholder = stringResource(id = R.string.input_password),
             keyboardOptions = KeyboardOptions(
@@ -75,10 +84,13 @@ fun LoginScreen(
             )
         )
         Spacer(modifier = Modifier.padding(8.dp))
+        // LOGIN BUTTON
         Button(
             modifier = Modifier.fillMaxWidth(),
             shape = MaterialTheme.shapes.large,
-            onClick = {}) {
+            onClick = {
+                chatViewModel?.login(email, password)
+            }) {
             Text(
                 modifier = Modifier.padding(4.dp),
                 text = stringResource(id = R.string.button_login),
@@ -86,6 +98,7 @@ fun LoginScreen(
             )
         }
         Spacer(modifier = Modifier.padding(12.dp))
+        // SIGN IN CALL TO ACTION
         TextButton(
             modifier = Modifier.fillMaxWidth(),
             shape = MaterialTheme.shapes.large,
