@@ -6,6 +6,7 @@ plugins {
     id "kotlinx-serialization"
     id "dagger.hilt.android.plugin"
     id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
 }
 
 android {
@@ -59,6 +60,7 @@ dependencies {
     implementation "androidx.compose.ui:ui:$compose_ui_version"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_ui_version"
     implementation 'androidx.compose.material:material:1.4.1'
+    implementation 'com.google.firebase:firebase-crashlytics-ktx:18.3.6'
     def navigation_version = "2.5.3"
     implementation 'androidx.compose.material:material-icons-extended'
     implementation"androidx.navigation:navigation-compose:$navigation_version"
