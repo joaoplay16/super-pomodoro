@@ -24,4 +24,7 @@
     <string name="input_repeat_password">Repeat password</string>
     <string name="button_register">Register</string>
     <string name="add_members_title">Add members</string>
+    <string name="email_already_in_use_error">The email address is already in use by another account.</string>
+    <string name="account_creation_error">Error on creating account</string>
+    <string name="signup_screen_title">Signup</string>
 </resources>
