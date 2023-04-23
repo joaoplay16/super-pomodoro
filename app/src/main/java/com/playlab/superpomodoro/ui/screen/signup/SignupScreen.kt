@@ -176,8 +176,9 @@ fun SignupScreen(
                             email = email
                         ), password
                     )
-
-                    if(chatViewModel?.currentUser != null) onSignUpSuccess()
+                    if(chatViewModel?.currentUser?.value != null) {
+                        onSignUpSuccess()
+                    }
                 }
             ) {
                 Text(
