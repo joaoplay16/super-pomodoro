@@ -27,4 +27,6 @@
     <string name="email_already_in_use_error">The email address is already in use by another account.</string>
     <string name="account_creation_error">Error on creating account</string>
     <string name="signup_screen_title">Signup</string>
+    <string name="invalid_credentials_error">Wrong password</string>
+    <string name="invalid_user_error">Invalid user</string>
 </resources>

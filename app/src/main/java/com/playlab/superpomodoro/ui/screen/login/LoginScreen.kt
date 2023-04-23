@@ -23,11 +23,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.playlab.superpomodoro.R
 import com.playlab.superpomodoro.ui.components.FormInput
 import com.playlab.superpomodoro.ui.components.TextLabel
@@ -41,9 +44,18 @@ fun LoginScreen(
     chatViewModel: ChatViewModel?,
     onSignUpLabelClick: () -> Unit = {}
 ) {
+    // TODO validate email and password
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+
+    val loginErrorMessage = when (chatViewModel?.loginUpError?.value) {
+        is FirebaseAuthInvalidCredentialsException ->
+            stringResource(id = R.string.invalid_credentials_error)
+        is FirebaseAuthInvalidUserException ->
+            stringResource(id = R.string.invalid_user_error)
+        else -> null
+    }
 
     Column(
         modifier = modifier,
@@ -95,6 +107,15 @@ fun LoginScreen(
                 modifier = Modifier.padding(4.dp),
                 text = stringResource(id = R.string.button_login),
                 fontSize = 18.sp
+            )
+        }
+        loginErrorMessage?.let {
+            Spacer(modifier = Modifier.padding(8.dp))
+            Text(
+                modifier = Modifier.padding(4.dp),
+                text = it,
+                fontSize = 18.sp,
+                color = Color.Red
             )
         }
         Spacer(modifier = Modifier.padding(12.dp))
