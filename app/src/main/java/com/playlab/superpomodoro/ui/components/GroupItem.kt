@@ -33,7 +33,8 @@ fun GroupItem(
     modifier: Modifier = Modifier,
     thumbnailUrl: String?,
     name: String,
-    lastMessageDate: String
+    lastMessage: String?,
+    lastMessageDate: String?
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -71,24 +72,28 @@ fun GroupItem(
                     overflow = TextOverflow.Ellipsis,
                     fontSize = 18.sp
                 )
+                lastMessageDate?.let{
+                    Text(
+                        modifier = modifier.weight(1f),
+                        text = it,
+                        textAlign = TextAlign.End,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        color = MaterialTheme.colors.onSurface.copy(0.6f),
+                        fontSize = 12.sp
+                    )
+                }
+            }
+           lastMessage?.let {
                 Text(
-                    modifier = modifier.weight(1f),
-                    text = lastMessageDate,
-                    textAlign = TextAlign.End,
+                    modifier = modifier.fillMaxWidth(),
+                    text = it,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     color = MaterialTheme.colors.onSurface.copy(0.6f),
-                    fontSize = 12.sp
+                    fontSize = 16.sp
                 )
             }
-            Text(
-                modifier = modifier.fillMaxWidth(),
-                text = name,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                color = MaterialTheme.colors.onSurface.copy(0.6f),
-                fontSize = 16.sp
-            )
         }
     }
 }
@@ -104,6 +109,7 @@ fun PreviewGroupItem() {
                     thumbnailUrl =
                     "https://www.fakepersongenerator.com" +
                             "/Face/female/female102157398572.jpg",
+                    lastMessage = "last message",
                     lastMessageDate = "07/04/2023"
                 )
                 Spacer(modifier = Modifier.padding(8.dp))
@@ -111,7 +117,8 @@ fun PreviewGroupItem() {
                 GroupItem(
                     name = "Study Group",
                     thumbnailUrl = null,
-                    lastMessageDate = "07/04/2023"
+                    lastMessage =null,
+                    lastMessageDate = null
                 )
             }
         }
