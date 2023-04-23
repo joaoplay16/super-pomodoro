@@ -8,7 +8,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Group(
-    val groupId: String,
+    val groupId: String?,
     val adminId: String,
     val name: String,
     val thumbnailUrl: String?
