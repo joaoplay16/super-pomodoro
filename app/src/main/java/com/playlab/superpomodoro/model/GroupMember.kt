@@ -8,7 +8,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class GroupMember(
-    val id: String,
+    val id: String?,
     val groupId: String,
     val userId: String
 ) : Parcelable {
