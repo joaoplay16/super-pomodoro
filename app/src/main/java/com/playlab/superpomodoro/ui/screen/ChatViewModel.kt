@@ -26,13 +26,19 @@ class ChatViewModel
     private var _signUpError = mutableStateOf<Throwable?>(null)
     val signUpError = _signUpError
 
+    private var _loginUpError = mutableStateOf<Throwable?>(null)
+    val loginUpError = _loginUpError
+
     init {
         getCurrentUser()
     }
 
     fun login(email: String, password: String)  {
         viewModelScope.launch {
-           firebaseRepository.login(email, password).collect{
+           firebaseRepository.login(email, password)
+               .catch {
+                   _loginUpError.value = it.cause
+               }.collect{
                it?.let {
                    _isLoggedIn.value = it
                }
