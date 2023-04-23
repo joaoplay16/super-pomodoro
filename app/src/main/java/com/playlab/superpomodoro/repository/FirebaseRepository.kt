@@ -3,6 +3,7 @@ package com.playlab.superpomodoro.repository
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.playlab.superpomodoro.model.Group
 import com.playlab.superpomodoro.model.User
 import com.playlab.superpomodoro.model.User.Companion.toUser
 import kotlinx.coroutines.cancel
@@ -19,6 +20,7 @@ class FirebaseRepository
 
     companion object {
         private const val USERS_COLLECTION = "users"
+        private const val GROUPS_COLLECTION = "groups"
     }
 
     fun login(email: String, password: String) : Flow<Boolean?> {
@@ -83,6 +85,21 @@ class FirebaseRepository
             awaitClose{
                 listener?.remove()
             }
+        }
+    }
+
+    fun createGroup(group: Group): Flow<Boolean?>{
+        return callbackFlow {
+            firebaseFirestore.collection(GROUPS_COLLECTION)
+                .add(group)
+                .addOnSuccessListener {documentRef ->
+                    trySend(true)
+                    documentRef.set(group.copy(groupId = documentRef.id))
+                }.addOnFailureListener{
+                    cancel("Group creation error", cause = it)
+                }
+
+            awaitClose()
         }
     }
 }
