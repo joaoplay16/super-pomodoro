@@ -3,9 +3,11 @@ package com.playlab.superpomodoro.ui.screen
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.playlab.superpomodoro.model.Group
 import com.playlab.superpomodoro.model.User
 import com.playlab.superpomodoro.repository.FirebaseRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -73,5 +75,9 @@ class ChatViewModel
                     _isLoggedIn.value = it != null
             }
         }
+    }
+
+    fun createGroup(group: Group): Flow<Boolean?> {
+        return firebaseRepository.createGroup(group)
     }
 }
