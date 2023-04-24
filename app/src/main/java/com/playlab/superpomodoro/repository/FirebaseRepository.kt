@@ -1,5 +1,6 @@
 package com.playlab.superpomodoro.repository
 
+import android.util.Log
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -7,6 +8,7 @@ import com.playlab.superpomodoro.exeception.UserAlreadyInTheGroupException
 import com.playlab.superpomodoro.exeception.UserNotFoundException
 import com.playlab.superpomodoro.model.Group
 import com.playlab.superpomodoro.model.GroupMember
+import com.playlab.superpomodoro.model.GroupMember.Companion.toGroupMember
 import com.playlab.superpomodoro.model.User
 import com.playlab.superpomodoro.model.User.Companion.toUser
 import kotlinx.coroutines.cancel
@@ -15,6 +17,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class FirebaseRepository
@@ -24,6 +27,8 @@ class FirebaseRepository
 ) {
 
     companion object {
+        private const val TAG = "FIREBASE"
+
         private const val USERS_COLLECTION = "users"
         private const val GROUPS_COLLECTION = "groups"
         private const val GROUP_MEMBERS_COLLECTION = "group_members"
@@ -165,6 +170,17 @@ class FirebaseRepository
         }
     }
 
+    suspend fun getUserById(userId: String) : User? {
+        return try {
+            firebaseFirestore.collection(USERS_COLLECTION)
+                .document(userId)
+                .get().await().toUser()
+        } catch (e: Exception){
+            Log.e(TAG, "Error fetching user by id")
+            throw  UserNotFoundException()
+        }
+    }
+
     private fun verifyMemberInGroup(userId: String, groupId: String): Flow<Boolean?> {
         return callbackFlow {
             firebaseFirestore.collection(GROUP_MEMBERS_COLLECTION)
@@ -184,6 +200,26 @@ class FirebaseRepository
                     cancel("Error on verifying group member", cause = it)
                 }
             awaitClose()
+        }
+    }
+
+    suspend fun getGroupMembers(groupId: String) : List<User> {
+        return try {
+            firebaseFirestore.collection(GROUP_MEMBERS_COLLECTION)
+                .whereEqualTo("groupId", groupId)
+                .get()
+                .await()
+                .documents
+                .map {
+                    Log.d(TAG,"Member ${ it.toGroupMember()}")
+
+                    it.toGroupMember()
+                }.map {
+                    getUserById(it!!.userId)!!
+                }
+        }catch (e: Exception){
+            Log.e(TAG,"Error fetching group members: ${e.message}")
+            emptyList()
         }
     }
 }
