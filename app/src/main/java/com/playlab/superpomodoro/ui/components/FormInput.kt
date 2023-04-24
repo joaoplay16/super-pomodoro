@@ -66,6 +66,7 @@ fun FormInput(
             IconButton(
                 modifier = Modifier
                     .alpha(alpha = ContentAlpha.medium),
+                enabled = false,
                 onClick = {}
             ) {
                 Icon(
