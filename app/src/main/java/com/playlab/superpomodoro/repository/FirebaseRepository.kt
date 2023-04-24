@@ -4,9 +4,11 @@ import android.util.Log
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.playlab.superpomodoro.exeception.GroupNotFoundException
 import com.playlab.superpomodoro.exeception.UserAlreadyInTheGroupException
 import com.playlab.superpomodoro.exeception.UserNotFoundException
 import com.playlab.superpomodoro.model.Group
+import com.playlab.superpomodoro.model.Group.Companion.toGroup
 import com.playlab.superpomodoro.model.GroupMember
 import com.playlab.superpomodoro.model.GroupMember.Companion.toGroupMember
 import com.playlab.superpomodoro.model.User
@@ -220,6 +222,38 @@ class FirebaseRepository
         }catch (e: Exception){
             Log.e(TAG,"Error fetching group members: ${e.message}")
             emptyList()
+        }
+    }
+
+    /**
+    * Get the groups that the current user is currently a member of
+    **/
+    suspend fun getUserGroups(userId: String) : List<Group> {
+        return try {
+            firebaseFirestore.collection(GROUP_MEMBERS_COLLECTION)
+                .whereEqualTo("userId", userId)
+                .get()
+                .await()
+                .documents
+                .map {
+                    it.toGroupMember()
+                }.map {
+                    getGroupById(it!!.groupId)!!
+                }
+        }catch (e: Exception){
+            Log.e(TAG,"Error fetching user groups")
+            emptyList()
+        }
+    }
+
+    suspend fun getGroupById(groupId: String) : Group? {
+        return try {
+            firebaseFirestore.collection(GROUPS_COLLECTION)
+                .document(groupId)
+                .get().await().toGroup()
+        } catch (e: Exception){
+            Log.e(TAG, "Error fetching group by id")
+            throw  GroupNotFoundException()
         }
     }
 }
