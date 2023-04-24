@@ -14,6 +14,7 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class FirebaseRepository
@@ -95,15 +96,24 @@ class FirebaseRepository
 
     fun createGroup(group: Group): Flow<Boolean?>{
         return callbackFlow {
-            firebaseFirestore.collection(GROUPS_COLLECTION)
-                .add(group)
-                .addOnSuccessListener {documentRef ->
-                    trySend(true)
-                    documentRef.set(group.copy(groupId = documentRef.id))
-                }.addOnFailureListener{
-                    cancel("Group creation error", cause = it)
-                }
-
+            val currentUser = getCurrentUserFromFirestore().first()
+            currentUser?.let {
+                firebaseFirestore.collection(GROUPS_COLLECTION)
+                    .add(group)
+                    .addOnSuccessListener {documentRef ->
+                        trySend(true)
+                        val groupCopy = group.copy(
+                            groupId = documentRef.id,
+                            adminId = currentUser.userId!!
+                        )
+                        documentRef.set(groupCopy)
+                        launch {
+                            addMemberToGroup(currentUser.email, groupCopy.groupId!!).first()
+                        }
+                    }.addOnFailureListener{
+                        cancel("Group creation error", cause = it)
+                    }
+            }
             awaitClose()
         }
     }
@@ -117,7 +127,7 @@ class FirebaseRepository
                     val groupMember = GroupMember(
                         null,
                         groupId = groupId,
-                        userId = user.email,
+                        userId = user.userId!!,
                     )
                     firebaseFirestore.collection(GROUP_MEMBERS_COLLECTION)
                         .add(groupMember)
