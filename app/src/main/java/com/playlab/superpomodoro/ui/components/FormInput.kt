@@ -2,6 +2,7 @@ package com.playlab.superpomodoro.ui.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
@@ -35,6 +36,7 @@ fun FormInput(
     keyboardOptions: KeyboardOptions = KeyboardOptions(
         imeAction = ImeAction.Next
     ),
+    keyboardActions: KeyboardActions = KeyboardActions(),
     onTextChange: (String) -> Unit,
 ) {
     OutlinedTextField(
@@ -74,6 +76,7 @@ fun FormInput(
             }
         },
         keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions,
         colors = TextFieldDefaults.textFieldColors(
             focusedIndicatorColor = MaterialTheme.colors.primaryVariant,
             unfocusedIndicatorColor = MaterialTheme.colors.primary,
