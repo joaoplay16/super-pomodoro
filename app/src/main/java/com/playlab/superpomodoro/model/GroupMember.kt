@@ -17,7 +17,7 @@ data class GroupMember(
             return try {
                 val userId = getString("userId")!!
                 val groupId = getString("groupId")!!
-                GroupMember(id, userId, groupId)
+                GroupMember(id = id, userId =  userId, groupId = groupId)
             } catch (e: Exception) {
                 Log.e(TAG, "Error converting group", e)
                 FirebaseCrashlytics.getInstance().log("Error converting group member")
