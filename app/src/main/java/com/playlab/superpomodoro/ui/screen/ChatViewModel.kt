@@ -63,7 +63,7 @@ class ChatViewModel
                 }
                .collect{
                    _currentUser.value = it
-                }
+            }
         }
     }
 
@@ -79,5 +79,9 @@ class ChatViewModel
 
     fun createGroup(group: Group): Flow<Boolean?> {
         return firebaseRepository.createGroup(group)
+    }
+
+    suspend fun getGroupMembers(groupId: String) : List<User>{
+        return firebaseRepository.getGroupMembers(groupId)
     }
 }
