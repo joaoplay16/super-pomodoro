@@ -32,4 +32,5 @@
     <string name="create_group_dialog_title">Create group</string>
     <string name="input_group_name_placeholder">Group name</string>
     <string name="create_group_dialog_button_create">Create</string>
+    <string name="user_not_found_error">User not found</string>
 </resources>
