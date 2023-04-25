@@ -129,12 +129,12 @@ class FirebaseRepository
         return callbackFlow {
             val user = getUserByEmail(email).first()
             user?.let {
-                val memberAlreadyExists = verifyMemberInGroup(user.email, groupId).first()
+                val memberAlreadyExists = verifyMemberInGroup(user.userId!!, groupId).first()
                 if (memberAlreadyExists == false) {
                     val groupMember = GroupMember(
                         null,
                         groupId = groupId,
-                        userId = user.userId!!,
+                        userId = user.userId,
                     )
                     firebaseFirestore.collection(GROUP_MEMBERS_COLLECTION)
                         .add(groupMember)
