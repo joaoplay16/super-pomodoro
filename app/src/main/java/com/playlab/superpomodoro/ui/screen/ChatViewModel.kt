@@ -4,6 +4,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.playlab.superpomodoro.model.Group
+import com.playlab.superpomodoro.model.Message
 import com.playlab.superpomodoro.model.User
 import com.playlab.superpomodoro.repository.FirebaseRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,16 +15,15 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ChatViewModel
-    @Inject constructor(
-        private val firebaseRepository: FirebaseRepository
-    ) : ViewModel() {
+@Inject constructor(
+    private val firebaseRepository: FirebaseRepository
+) : ViewModel() {
 
     private var _currentUser = mutableStateOf<User?>(null)
     val currentUser = _currentUser
 
     private var _isLoggedIn = mutableStateOf( _currentUser.value != null)
     val isLoggedIn = _isLoggedIn
-
 
     private var _signUpError = mutableStateOf<Throwable?>(null)
     val signUpError = _signUpError
@@ -37,14 +37,14 @@ class ChatViewModel
 
     fun login(email: String, password: String)  {
         viewModelScope.launch {
-           firebaseRepository.login(email, password)
-               .catch {
-                   _loginUpError.value = it.cause
-               }.collect{
-               it?.let {
-                   _isLoggedIn.value = it
-               }
-           }
+            firebaseRepository.login(email, password)
+                .catch {
+                    _loginUpError.value = it.cause
+                }.collect{
+                    it?.let {
+                        _isLoggedIn.value = it
+                    }
+                }
         }
     }
 
@@ -61,9 +61,9 @@ class ChatViewModel
                 .catch {
                     _signUpError.value = it.cause
                 }
-               .collect{
-                   _currentUser.value = it
-            }
+                .collect{
+                    _currentUser.value = it
+                }
         }
     }
 
@@ -73,7 +73,7 @@ class ChatViewModel
                 .collect{
                     _currentUser.value = it
                     _isLoggedIn.value = it != null
-            }
+                }
         }
     }
 
@@ -87,5 +87,9 @@ class ChatViewModel
 
     suspend fun getGroupMembers(groupId: String) : List<User>{
         return firebaseRepository.getGroupMembers(groupId)
+    }
+
+    suspend fun getUserGroupsWithLastMessage() : Map<Group, Message?>{
+        return firebaseRepository.getUserGroupsWithLastMessage()
     }
 }
