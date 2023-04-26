@@ -39,10 +39,10 @@ fun FormInput(
     keyboardOptions: KeyboardOptions = KeyboardOptions(
         imeAction = ImeAction.Next
     ),
-    keyboardActions: KeyboardActions = KeyboardActions(),
     onTextChange: (String) -> Unit,
     isError: Boolean = false,
-    errorMessage: String? = null
+    errorMessage: String? = null,
+    onImeAction: () -> Unit = {}
 ) {
     Column {
 
@@ -84,7 +84,9 @@ fun FormInput(
                 }
             },
             keyboardOptions = keyboardOptions,
-            keyboardActions = keyboardActions,
+            keyboardActions = KeyboardActions (
+                onDone = { onImeAction() }
+            ),
             colors = TextFieldDefaults.textFieldColors(
                 focusedIndicatorColor = MaterialTheme.colors.primaryVariant,
                 unfocusedIndicatorColor = MaterialTheme.colors.primary,
