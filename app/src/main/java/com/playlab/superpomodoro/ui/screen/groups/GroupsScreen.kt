@@ -7,12 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Group
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -27,6 +22,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import com.playlab.superpomodoro.R
 import com.playlab.superpomodoro.model.Group
 import com.playlab.superpomodoro.ui.components.CreateGroupDialog
+import com.playlab.superpomodoro.ui.components.ExpandableFAB
 import com.playlab.superpomodoro.ui.components.GroupItem
 import com.playlab.superpomodoro.ui.screen.ChatViewModel
 import com.playlab.superpomodoro.ui.screen.DevicesPreviews
@@ -119,22 +115,16 @@ fun GroupsScreen(
                 }
             }
         }
-
-        FloatingActionButton(
+        ExpandableFAB(
             modifier = Modifier
                 .padding(vertical = 24.dp, horizontal = 20.dp)
                 .constrainAs(floatActionButton) {
                     end.linkTo(parent.end)
                     bottom.linkTo(parent.bottom)
                 },
-            backgroundColor = MaterialTheme.colors.primaryVariant,
-            onClick = { showCreateGroupDialog = true }
-        ) {
-            Icon(
-                imageVector = Icons.Default.Group,
-                contentDescription = null
-            )
-        }
+            onLogout = { chatViewModel?.logout() },
+            onAddNewGroup = { showCreateGroupDialog = true }
+        )
     }
 }
 
