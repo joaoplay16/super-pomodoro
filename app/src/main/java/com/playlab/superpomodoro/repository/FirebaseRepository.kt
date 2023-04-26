@@ -11,6 +11,7 @@ import com.playlab.superpomodoro.model.Group
 import com.playlab.superpomodoro.model.Group.Companion.toGroup
 import com.playlab.superpomodoro.model.GroupMember
 import com.playlab.superpomodoro.model.GroupMember.Companion.toGroupMember
+import com.playlab.superpomodoro.model.Message
 import com.playlab.superpomodoro.model.User
 import com.playlab.superpomodoro.model.User.Companion.toUser
 import kotlinx.coroutines.cancel
@@ -34,6 +35,7 @@ class FirebaseRepository
         private const val USERS_COLLECTION = "users"
         private const val GROUPS_COLLECTION = "groups"
         private const val GROUP_MEMBERS_COLLECTION = "group_members"
+        private const val MESSAGES_COLLECTION = "messages"
     }
 
     fun login(email: String, password: String) : Flow<Boolean?> {
@@ -254,6 +256,21 @@ class FirebaseRepository
         } catch (e: Exception){
             Log.e(TAG, "Error fetching group by id")
             throw  GroupNotFoundException()
+        }
+    }
+
+    suspend fun sendMessageToGroup(
+        message: Message
+    ): Boolean {
+        return try {
+            val documentRef = firebaseFirestore.collection(MESSAGES_COLLECTION)
+                .add(message)
+                .await()
+            documentRef.set(message.copy(messageId = documentRef.id))
+            true
+        }catch (e: Exception) {
+            Log.e(TAG, "Error sending message to group")
+            false
         }
     }
 }
