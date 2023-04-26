@@ -81,6 +81,10 @@ class ChatViewModel
         return firebaseRepository.createGroup(group)
     }
 
+    fun addMemberToGroup(email: String, groupId: String): Flow<Boolean?>{
+        return firebaseRepository.addMemberToGroup(email, groupId)
+    }
+
     suspend fun getGroupMembers(groupId: String) : List<User>{
         return firebaseRepository.getGroupMembers(groupId)
     }
