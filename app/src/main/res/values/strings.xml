@@ -33,4 +33,6 @@
     <string name="input_group_name_placeholder">Group name</string>
     <string name="create_group_dialog_button_create">Create</string>
     <string name="user_not_found_error">User not found</string>
+    <string name="invalid_email_error">Invalid email\n</string>
+    <string name="user_already_in_the_group_error">This user is already in the group</string>
 </resources>
