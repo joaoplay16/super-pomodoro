@@ -16,6 +16,7 @@ import com.playlab.superpomodoro.model.Message
 import com.playlab.superpomodoro.model.Message.Companion.toMessage
 import com.playlab.superpomodoro.model.User
 import com.playlab.superpomodoro.model.User.Companion.toUser
+import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -277,6 +278,31 @@ class FirebaseRepository
         }catch (e: Exception) {
             Log.e(TAG, "Error sending message to group")
             false
+        }
+    }
+
+    fun getGroupMessages(
+        groupId: String
+    ): Flow<Map<Message, User>> {
+        return callbackFlow {
+            firebaseFirestore.collection(MESSAGES_COLLECTION)
+                .whereEqualTo("groupId", groupId)
+                .orderBy("timestamp", Query.Direction.DESCENDING)
+                .limit(500)
+                .addSnapshotListener { querySnapshot, error ->
+                    if(error != null) {
+                        cancel("Error on fetching messages", error)
+                    }
+                    launch {
+                        val messages = querySnapshot?.map {
+                            it.toMessage()!!
+                        }?.associateWith {
+                            async {  getUserById(it.senderId)}.await()!!
+                        }
+                        trySend(messages ?: emptyMap())
+                    }
+                }
+            awaitClose()
         }
     }
 
