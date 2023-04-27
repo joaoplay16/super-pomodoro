@@ -35,4 +35,6 @@
     <string name="user_not_found_error">User not found</string>
     <string name="invalid_email_error">Invalid email\n</string>
     <string name="user_already_in_the_group_error">This user is already in the group</string>
+    <string name="group_creation_message">you have created the group</string>
+    <string name="added_to_the_group_message">you\'ve been added</string>
 </resources>
