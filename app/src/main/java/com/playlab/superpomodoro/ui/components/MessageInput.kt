@@ -31,7 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.playlab.superpomodoro.R
-import com.playlab.superpomodoro.ui.theme.Gray100
+import com.playlab.superpomodoro.ui.theme.Pearl100
 import com.playlab.superpomodoro.ui.theme.SuperPomodoroTheme
 
 @Composable
@@ -77,7 +77,7 @@ fun MessageInput(
             colors = TextFieldDefaults.textFieldColors(
                 focusedIndicatorColor = MaterialTheme.colors.primaryVariant,
                 unfocusedIndicatorColor = MaterialTheme.colors.primary,
-                backgroundColor = Gray100,
+                backgroundColor = Pearl100,
                 cursorColor = MaterialTheme.colors.onSurface
             ),
         )
