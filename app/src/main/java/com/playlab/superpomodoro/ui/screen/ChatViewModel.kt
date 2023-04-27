@@ -1,5 +1,6 @@
 package com.playlab.superpomodoro.ui.screen
 
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -31,8 +32,23 @@ class ChatViewModel
     private var _loginUpError = mutableStateOf<Throwable?>(null)
     val loginUpError = _loginUpError
 
+    private var _userGroupsWithLastMessage = mutableStateMapOf<Group, Message?>()
+    val userGroupsWithLastMessage = _userGroupsWithLastMessage
+
     init {
         getCurrentUser()
+//        viewModelScope.launch {
+//            firebaseRepository.sendMessageToGroup(
+//               Message(
+//                   "",
+//                   senderId = "7S7zBBn20bSz2y0CPAnbA9iEyH92",
+//                   groupId = "RfYJ0k1gg7avrC7z0TEP",
+//                   text = "Low density is better",
+//                   timestamp = System.currentTimeMillis()
+//
+//               )
+//            )
+//        }
     }
 
     fun login(email: String, password: String)  {
@@ -89,7 +105,9 @@ class ChatViewModel
         return firebaseRepository.getGroupMembers(groupId)
     }
 
-    suspend fun getUserGroupsWithLastMessage() : Map<Group, Message?>{
-        return firebaseRepository.getUserGroupsWithLastMessage()
+    suspend fun getUserGroupsWithLastMessage() {
+        viewModelScope.launch {
+         _userGroupsWithLastMessage.putAll(firebaseRepository.getUserGroupsWithLastMessage())
+        }
     }
 }
