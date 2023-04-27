@@ -110,4 +110,8 @@ class ChatViewModel
          _userGroupsWithLastMessage.putAll(firebaseRepository.getUserGroupsWithLastMessage())
         }
     }
+
+    suspend fun sendMessageToGroup(message: Message): Boolean{
+        return firebaseRepository.sendMessageToGroup(message)
+    }
 }
