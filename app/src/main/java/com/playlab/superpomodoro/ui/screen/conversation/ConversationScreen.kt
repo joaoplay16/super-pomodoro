@@ -88,7 +88,7 @@ fun ConversationScreen(
 
         val coroutineScope = rememberCoroutineScope()
 
-        val messages = chatViewModel?.groupMessages
+        val messages = chatViewModel?.groupMessages?.toSortedMap(compareBy{ it.timestamp })
 
         LaunchedEffect(key1 = Unit, block = {
             chatViewModel?.getGroupMessages(groupId)
