@@ -37,4 +37,6 @@
     <string name="user_already_in_the_group_error">This user is already in the group</string>
     <string name="group_creation_message">you have created the group</string>
     <string name="added_to_the_group_message">you\'ve been added</string>
+    <string name="message_input_cd">Message text input</string>
+    <string name="message_input_placeholder">Message</string>
 </resources>
