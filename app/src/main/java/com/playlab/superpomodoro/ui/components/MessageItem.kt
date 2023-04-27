@@ -26,7 +26,7 @@ import com.playlab.superpomodoro.ui.theme.SuperPomodoroTheme
 @Composable
 fun MessageItem(
     modifier: Modifier = Modifier,
-    senderName: String,
+    senderName: String?,
     text: String,
     date: String,
     backgroundColor: Color = Olive100
@@ -42,15 +42,17 @@ fun MessageItem(
             )
     ) {
         val (senderNameRef, textRef, dateRef) = createRefs()
-        Text(
-            modifier = Modifier.constrainAs(senderNameRef){
-                top.linkTo(parent.top)
-                start.linkTo(parent.start)
-            },
-            text = senderName,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Bold
-        )
+       senderName?.let{
+            Text(
+                modifier = Modifier.constrainAs(senderNameRef){
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start)
+                },
+                text = senderName,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
         Text(
             modifier = Modifier.constrainAs(textRef){
                 top.linkTo(senderNameRef.bottom)
@@ -89,6 +91,14 @@ fun PreviewMessageItem() {
                 Spacer(modifier = Modifier.padding(12.dp))
                 MessageItem(
                     senderName = "Mike",
+                    text = "Lorem ipsum dolor sit amet. Sit accusamus corporis " +
+                            "nam illo excepturi est molestias dolore est sint unde",
+                    date = "25/02/2023 18:25",
+                    backgroundColor = Banana100
+                )
+                Spacer(modifier = Modifier.padding(12.dp))
+                MessageItem(
+                    senderName = null,
                     text = "Lorem ipsum dolor sit amet. Sit accusamus corporis " +
                             "nam illo excepturi est molestias dolore est sint unde",
                     date = "25/02/2023 18:25",
