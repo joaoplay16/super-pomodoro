@@ -11,6 +11,7 @@ import com.playlab.superpomodoro.repository.FirebaseRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -35,20 +36,11 @@ class ChatViewModel
     private var _userGroupsWithLastMessage = mutableStateMapOf<Group, Message?>()
     val userGroupsWithLastMessage = _userGroupsWithLastMessage
 
+    private var _groupMessages = mutableStateMapOf<Message, User>()
+    val groupMessages = _groupMessages
+
     init {
         getCurrentUser()
-//        viewModelScope.launch {
-//            firebaseRepository.sendMessageToGroup(
-//               Message(
-//                   "",
-//                   senderId = "7S7zBBn20bSz2y0CPAnbA9iEyH92",
-//                   groupId = "RfYJ0k1gg7avrC7z0TEP",
-//                   text = "Low density is better",
-//                   timestamp = System.currentTimeMillis()
-//
-//               )
-//            )
-//        }
     }
 
     fun login(email: String, password: String)  {
@@ -113,5 +105,13 @@ class ChatViewModel
 
     suspend fun sendMessageToGroup(message: Message): Boolean{
         return firebaseRepository.sendMessageToGroup(message)
+    }
+
+    fun getGroupMessages(groupId: String) {
+        viewModelScope.launch {
+            firebaseRepository.getGroupMessages(groupId).collect{ map ->
+                _groupMessages.putAll(map)
+            }
+        }
     }
 }
