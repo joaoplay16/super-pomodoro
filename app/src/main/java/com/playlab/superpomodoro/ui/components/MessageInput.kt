@@ -75,8 +75,8 @@ fun MessageInput(
                 keyboardType = KeyboardType.Text,
             ),
             colors = TextFieldDefaults.textFieldColors(
-                focusedIndicatorColor = MaterialTheme.colors.primaryVariant,
-                unfocusedIndicatorColor = MaterialTheme.colors.primary,
+                focusedIndicatorColor = MaterialTheme.colors.secondary,
+                unfocusedIndicatorColor = MaterialTheme.colors.secondary.copy(0.6f),
                 backgroundColor = Pearl100,
                 cursorColor = MaterialTheme.colors.onSurface
             ),
