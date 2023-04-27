@@ -85,7 +85,6 @@ fun MessageInput(
         IconButton(
             modifier = Modifier.size(56.dp)
                 .background(MaterialTheme.colors.secondary, CircleShape),
-            enabled = false,
             onClick = onSendClick
         ) {
             Icon(
