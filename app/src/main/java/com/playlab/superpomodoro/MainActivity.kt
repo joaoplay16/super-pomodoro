@@ -21,6 +21,7 @@ import com.playlab.superpomodoro.ui.screen.ScreenRoutes
 import com.playlab.superpomodoro.ui.screen.gameview.GameView
 import com.playlab.superpomodoro.ui.screen.main.MainScreen
 import com.playlab.superpomodoro.ui.screen.settings.SettingsScreen
+import com.playlab.superpomodoro.ui.screen.signup.SignupScreen
 import com.playlab.superpomodoro.ui.theme.SuperPomodoroTheme
 import com.playlab.superpomodoro.util.SoundEffects
 import com.playlab.superpomodoro.util.VibratorUtil
@@ -109,6 +110,9 @@ fun DefaultNavHost(
                     navController.currentBackStackEntry?.savedStateHandle?.set("game", it)
                     navController.navigate(ScreenRoutes.GameView.name)
                 },
+                onSignUpClick = {
+                    navController.navigate(ScreenRoutes.ChatSignup.name)
+                },
                 pomodoroViewModel = pomodoroViewModel
             )
         }
@@ -132,6 +136,17 @@ fun DefaultNavHost(
 
             GameView(url = game.url)
             }
+        }
+
+        composable(ScreenRoutes.ChatSignup.name){
+            SignupScreen(
+                onArrowBackPressed = {
+                    navController.popBackStack()
+                },
+                onSignUpSuccess = {
+                    navController.popBackStack()
+                }
+            )
         }
     }
 }
