@@ -111,7 +111,9 @@ fun ConversationScreen(
                                 }
                             ) {
                                 Text(
-                                    text = stringResource(id = R.string.leave_the_group_menu_option)
+                                    text = stringResource(id = R.string.leave_the_group_menu_option),
+                                    fontSize = 18.sp,
+                                    style = MaterialTheme.typography.body1
                                 )
                             }
                         }
