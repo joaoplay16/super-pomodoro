@@ -41,4 +41,6 @@
     <string name="message_input_placeholder">Message</string>
     <string name="menu_icon_cd">Menu icon</string>
     <string name="leave_the_group_menu_option">Leave the group</string>
+    <string name="action_dialog_button_ok">ok</string>
+    <string name="action_dialog_button_cancel">cancel</string>
 </resources>

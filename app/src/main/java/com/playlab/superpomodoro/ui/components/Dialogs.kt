@@ -1,12 +1,21 @@
 package com.playlab.superpomodoro.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.AlertDialog
+import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Remove
@@ -16,8 +25,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -51,10 +62,10 @@ fun TimeSelectorDialog(
             TextLabel(
                 modifier = Modifier
                     .constrainAs(inputLabel){
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                    top.linkTo(parent.top)
-                },
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                        top.linkTo(parent.top)
+                    },
                 text = label,
                 textColor = Color.White,
                 textStyle = MaterialTheme.typography.body1.copy(
@@ -105,6 +116,72 @@ fun TimeSelectorDialog(
                     tint = Color.White
                 )
             }
+        }
+    }
+}
+
+@Composable
+fun ActionDialog(
+    modifier: Modifier = Modifier,
+    title: String,
+    text: String,
+    onDismissRequest: () -> Unit,
+    onOkClick: () -> Unit,
+    onCancelClick: () -> Unit,
+) {
+    AlertDialog(
+        modifier = modifier.clip(MaterialTheme.shapes.large),
+        title = {
+            Text(title)
+        },
+        text = {
+            Text(text)
+        },
+        onDismissRequest = onDismissRequest,
+        buttons = {
+            Row (
+                modifier = Modifier
+                    .padding(
+                        start = 22.dp, end = 22.dp, bottom = 8.dp
+                    )
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.End,
+
+                ){
+                TextButton(
+                    onClick = onCancelClick) {
+                    Text(
+                        text =stringResource(
+                            id = R.string.action_dialog_button_cancel
+                        ).uppercase()
+                    )
+                }
+                Spacer(modifier = Modifier.padding(8.dp))
+                Button(
+                    onClick = onOkClick) {
+                    Text(
+                        text = stringResource(
+                            id = R.string.action_dialog_button_ok
+                        ).uppercase()
+                    )
+                }
+            }
+        }
+    )
+}
+
+@Preview
+@Composable
+fun PreviewActionDialog() {
+    SuperPomodoroTheme(false) {
+        Surface {
+            ActionDialog(
+                title = "Delete",
+                text = "Are you sure?",
+                onDismissRequest = {},
+                onCancelClick = {},
+                onOkClick = {}
+            )
         }
     }
 }
