@@ -184,7 +184,7 @@ class FirebaseRepository
                 .get().await().toUser()
         } catch (e: Exception){
             Log.e(TAG, "Error fetching user by id")
-            throw  UserNotFoundException()
+            null
         }
     }
 
