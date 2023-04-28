@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.tooling.preview.Preview
 import com.playlab.superpomodoro.model.Game
 import com.playlab.superpomodoro.model.Group
@@ -24,7 +25,7 @@ fun MainScreen(
     onSignUpClick: () -> Unit,
     onGroupSelected: (Group) -> Unit
 ) {
-    var selectedTab by remember{ mutableStateOf(TabPage.Home) }
+    var selectedTab by rememberSaveable{ mutableStateOf(TabPage.Home) }
 
     Scaffold(topBar = {
         HomeTabBar(
