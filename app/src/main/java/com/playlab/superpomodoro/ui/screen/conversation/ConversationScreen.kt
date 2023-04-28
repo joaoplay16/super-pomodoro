@@ -144,7 +144,7 @@ fun ConversationScreen(
 
         LaunchedEffect(key1 = messages, block = {
             if(mostRecentMessageIndex == firstVisibleItemIndex)
-                listState.scrollToItem(messages?.size!!)
+                messages?.size?.let { listState.scrollToItem(it) }
         })
 
 
