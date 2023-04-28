@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
@@ -18,6 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,6 +43,7 @@ import com.playlab.superpomodoro.ui.theme.Banana100
 import com.playlab.superpomodoro.ui.theme.Olive100
 import com.playlab.superpomodoro.ui.theme.SuperPomodoroTheme
 import kotlinx.coroutines.launch
+import kotlin.math.max
 
 @Composable
 fun ConversationScreen(
@@ -90,9 +93,25 @@ fun ConversationScreen(
 
         val messages = chatViewModel?.groupMessages?.toSortedMap(compareBy{ it.timestamp })
 
+        val listState = rememberLazyListState()
+
+        val firstVisibleItemIndex by  remember { derivedStateOf { listState.firstVisibleItemIndex }}
+
+        var mostRecentMessageIndex by remember{ mutableStateOf(0) }
+
+        LaunchedEffect(key1 = firstVisibleItemIndex, block = {
+            mostRecentMessageIndex = max(mostRecentMessageIndex, firstVisibleItemIndex)
+        })
+
         LaunchedEffect(key1 = Unit, block = {
             chatViewModel?.getGroupMessages(groupId)
         })
+
+        LaunchedEffect(key1 = messages, block = {
+            if(mostRecentMessageIndex == firstVisibleItemIndex)
+                listState.scrollToItem(messages?.size!!)
+        })
+
 
         Column(
             modifier = modifier
@@ -104,13 +123,14 @@ fun ConversationScreen(
             LazyColumn(
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.Bottom,
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
+                state = listState
             ) {
                 messages?.map {
                     val (message, user) = it
                     val isThisUser = user.userId == currentUserId
 
-                    item {
+                    item(key = message.messageId) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement =
