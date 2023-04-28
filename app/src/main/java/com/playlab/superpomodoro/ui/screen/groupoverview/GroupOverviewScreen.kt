@@ -10,8 +10,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -29,6 +31,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -37,6 +41,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.playlab.superpomodoro.R
 import com.playlab.superpomodoro.exeception.UserAlreadyInTheGroupException
 import com.playlab.superpomodoro.model.Group
@@ -58,14 +64,15 @@ fun GroupOverviewScreen(
     onArrowBackPressed: ()  -> Unit,
     chatViewModel: ChatViewModel? = hiltViewModel()
 ) {
+    val context = LocalContext.current
+
     Scaffold(
         topBar = {
-            Row(
+            Column(
                 Modifier
                     .fillMaxWidth()
+                    .padding(16.dp)
                     .background(MaterialTheme.colors.surface),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
             ) {
                 Row(
                     modifier = Modifier,
@@ -73,13 +80,34 @@ fun GroupOverviewScreen(
                 ) {
                     Icon(
                         modifier = Modifier
-                            .padding(16.dp)
                             .clickable {
                                 onArrowBackPressed()
                             },
                         imageVector = Icons.Default.ArrowBack,
                         contentDescription = stringResource(id = R.string.arrow_back_icon_content_description)
                     )
+                }
+                Row(
+                    modifier = Modifier.padding(top = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    val imageRequest = remember {
+                        ImageRequest.Builder(context)
+                            .data(group.thumbnailUrl)
+                            .error(R.drawable.default_avatar)
+                            .placeholder(R.drawable.default_avatar)
+                            .crossfade(300)
+                            .build()
+                    }
+                    AsyncImage(
+                        modifier = Modifier
+                            .size(94.dp)
+                            .clip(CircleShape),
+                        model = imageRequest,
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                    )
+                    Spacer(Modifier.padding(8.dp))
                     TextLabel(
                         text = group.name,
                         textStyle = MaterialTheme.typography.subtitle2,
@@ -89,8 +117,6 @@ fun GroupOverviewScreen(
             }
         }
     ) { paddingValues ->
-
-        val context = LocalContext.current
 
         val coroutineScope = rememberCoroutineScope()
 
@@ -122,7 +148,6 @@ fun GroupOverviewScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
-            Spacer(modifier = Modifier.padding(12.dp))
             // TITLE
             Row(Modifier.fillMaxWidth()) {
                 TextLabel(
