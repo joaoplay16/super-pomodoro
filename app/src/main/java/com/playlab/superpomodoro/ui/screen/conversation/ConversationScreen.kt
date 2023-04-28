@@ -59,6 +59,7 @@ fun ConversationScreen(
     groupId: String,
     groupName: String,
     onGroupNameClick: () -> Unit,
+    onLeaveGroup: () -> Unit,
 ) {
     var showActionDialog by remember{ mutableStateOf(false) }
     var isOptionMenuOpen by remember { mutableStateOf(false) }
@@ -227,7 +228,9 @@ fun ConversationScreen(
                 title = groupName,
                 text = stringResource(id = R.string.leave_the_group_dialog_text),
                 onDismissRequest = { showActionDialog = false },
-                onOkClick = {},
+                onOkClick = {
+                    onLeaveGroup()
+                },
                 onCancelClick = { showActionDialog = false }
             )
         }
@@ -244,7 +247,8 @@ fun SettingsScreenPreview() {
                 chatViewModel = null,
                 groupId = "",
                 groupName = "Study group",
-                onGroupNameClick = {}
+                onGroupNameClick = {},
+                onLeaveGroup = {}
             )
         }
     }
