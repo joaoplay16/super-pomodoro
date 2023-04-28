@@ -34,7 +34,7 @@ import kotlinx.coroutines.launch
 fun GroupsScreen(
     modifier: Modifier = Modifier,
     chatViewModel: ChatViewModel?,
-    onGroupSelected: (groupId: String) -> Unit
+    onGroupSelected: (Group) -> Unit
 ) {
     ConstraintLayout(
         modifier = modifier
@@ -102,7 +102,7 @@ fun GroupsScreen(
 
                 item(group.groupId){
                     Row(
-                        modifier = Modifier.clickable { onGroupSelected(group.groupId!!) },
+                        modifier = Modifier.clickable { onGroupSelected(group) },
                     ){
                         GroupItem(
                             thumbnailUrl = group.thumbnailUrl,
