@@ -39,4 +39,6 @@
     <string name="added_to_the_group_message">you\'ve been added</string>
     <string name="message_input_cd">Message text input</string>
     <string name="message_input_placeholder">Message</string>
+    <string name="menu_icon_cd">Menu icon</string>
+    <string name="leave_the_group_menu_option">Leave the group</string>
 </resources>
