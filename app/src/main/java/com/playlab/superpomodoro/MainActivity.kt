@@ -16,8 +16,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.playlab.superpomodoro.model.Game
+import com.playlab.superpomodoro.model.Group
 import com.playlab.superpomodoro.ui.screen.PomodoroViewModel
 import com.playlab.superpomodoro.ui.screen.ScreenRoutes
+import com.playlab.superpomodoro.ui.screen.conversation.ConversationScreen
 import com.playlab.superpomodoro.ui.screen.gameview.GameView
 import com.playlab.superpomodoro.ui.screen.main.MainScreen
 import com.playlab.superpomodoro.ui.screen.settings.SettingsScreen
@@ -113,6 +115,10 @@ fun DefaultNavHost(
                 onSignUpClick = {
                     navController.navigate(ScreenRoutes.ChatSignup.name)
                 },
+                onGroupSelected = {
+                    navController.currentBackStackEntry?.savedStateHandle?.set("group", it)
+                    navController.navigate(ScreenRoutes.Conversation.name)
+                },
                 pomodoroViewModel = pomodoroViewModel
             )
         }
@@ -147,6 +153,23 @@ fun DefaultNavHost(
                     navController.popBackStack()
                 }
             )
+        }
+
+        composable(ScreenRoutes.Conversation.name){
+            val group = navController
+                .previousBackStackEntry
+                ?.savedStateHandle
+                ?.get<Group>("group")
+
+            group?.let {
+                ConversationScreen(
+                    groupId = group.groupId!! ,
+                    groupName = group.name,
+                    onArrowBackPressed = {
+                        navController.popBackStack()
+                    }
+                )
+            }
         }
     }
 }
