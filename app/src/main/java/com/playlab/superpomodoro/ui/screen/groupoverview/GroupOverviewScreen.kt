@@ -1,4 +1,4 @@
-package com.playlab.superpomodoro.ui.screen.addmember
+package com.playlab.superpomodoro.ui.screen.groupoverview
 
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.playlab.superpomodoro.R
 import com.playlab.superpomodoro.exeception.UserAlreadyInTheGroupException
+import com.playlab.superpomodoro.model.Group
 import com.playlab.superpomodoro.model.User
 import com.playlab.superpomodoro.ui.components.FormInput
 import com.playlab.superpomodoro.ui.components.GroupMemberItem
@@ -51,10 +52,9 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
 @Composable
-fun AddMemberToGroupScreen(
+fun GroupOverviewScreen(
     modifier: Modifier = Modifier,
-    groupId: String,
-    groupName: String,
+    group: Group,
     onArrowBackPressed: ()  -> Unit,
     chatViewModel: ChatViewModel? = hiltViewModel()
 ) {
@@ -81,7 +81,7 @@ fun AddMemberToGroupScreen(
                         contentDescription = stringResource(id = R.string.arrow_back_icon_content_description)
                     )
                     TextLabel(
-                        text = groupName,
+                        text = group.name,
                         textStyle = MaterialTheme.typography.subtitle2,
                         fontSize = dimensionResource(id = R.dimen.screen_title_font_size).value.sp
                     )
@@ -109,7 +109,7 @@ fun AddMemberToGroupScreen(
 
         LaunchedEffect(key1 = isMemberAdded, block = {
             chatViewModel
-                ?.getGroupMembers(groupId)
+                ?.getGroupMembers(group.groupId!!)
                 ?.let { members = it }
             userEmail = ""
         })
@@ -154,7 +154,7 @@ fun AddMemberToGroupScreen(
                     isEmailValid = InputValidator.emailIsValid(userEmail)
                     if(isEmailValid.not()) return@FormInput
                     coroutineScope.launch {
-                        chatViewModel?.addMemberToGroup(userEmail, groupId)
+                        chatViewModel?.addMemberToGroup(userEmail, group.groupId!!)
                             ?.catch{ exception ->
                                 when(exception.cause){
                                     is UserAlreadyInTheGroupException -> {
@@ -204,11 +204,16 @@ fun AddMemberToGroupScreen(
 fun AddGroupMemberScreenPreview() {
     SuperPomodoroTheme(false) {
         Surface {
-            AddMemberToGroupScreen(
-                groupName = "Study group",
+            val group = Group(
+                "0",
+                        "0",
+                "Study group",
+                thumbnailUrl = null
+            )
+            GroupOverviewScreen(
+                group = group,
                 onArrowBackPressed = {},
                 chatViewModel = null,
-                groupId = "1"
             )
         }
     }
