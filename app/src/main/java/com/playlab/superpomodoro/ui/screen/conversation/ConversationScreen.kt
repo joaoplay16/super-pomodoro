@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.playlab.superpomodoro.R
 import com.playlab.superpomodoro.model.Message
+import com.playlab.superpomodoro.ui.components.ActionDialog
 import com.playlab.superpomodoro.ui.components.MessageInput
 import com.playlab.superpomodoro.ui.components.MessageItem
 import com.playlab.superpomodoro.ui.components.TextLabel
@@ -57,8 +58,11 @@ fun ConversationScreen(
     onArrowBackPressed: ()  -> Unit,
     groupId: String,
     groupName: String,
-    onGroupNameClick: () -> Unit
+    onGroupNameClick: () -> Unit,
 ) {
+    var showActionDialog by remember{ mutableStateOf(false) }
+    var isOptionMenuOpen by remember { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             Row(
@@ -88,11 +92,10 @@ fun ConversationScreen(
                     )
                 }
                 Row{
-                    var isOpen by remember { mutableStateOf(false) }
 
                     Box(
                         modifier = Modifier
-                            .clickable(onClick = { isOpen = true })
+                            .clickable(onClick = { isOptionMenuOpen = true })
                     ) {
                         Icon(
                             modifier = Modifier
@@ -102,12 +105,12 @@ fun ConversationScreen(
                         )
 
                         DropdownMenu(
-                            expanded = isOpen,
-                            onDismissRequest = { isOpen = false }
+                            expanded = isOptionMenuOpen,
+                            onDismissRequest = { isOptionMenuOpen = false }
                         ) {
                             DropdownMenuItem(
                                 onClick = {
-                                    // TODO add action
+                                    showActionDialog = true
                                 }
                             ) {
                                 Text(
@@ -122,6 +125,7 @@ fun ConversationScreen(
             }
         }
     ){ paddingValues ->
+
 
         var messageText by remember {mutableStateOf("")}
 
@@ -216,6 +220,16 @@ fun ConversationScreen(
                     }
                 )
             }
+        }
+        if(showActionDialog){
+            isOptionMenuOpen = false
+            ActionDialog(
+                title = groupName,
+                text = stringResource(id = R.string.leave_the_group_dialog_text),
+                onDismissRequest = { showActionDialog = false },
+                onOkClick = {},
+                onCancelClick = { showActionDialog = false }
+            )
         }
     }
 }
