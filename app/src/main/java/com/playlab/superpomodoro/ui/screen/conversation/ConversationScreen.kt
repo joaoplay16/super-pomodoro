@@ -159,6 +159,7 @@ fun ConversationScreen(
                         messageText = it
                     },
                     onSendClick = {
+                        if(messageText.isBlank()) return@MessageInput
                         coroutineScope.launch {
                             currentUserId?.let{
                                 val sent = chatViewModel.sendMessageToGroup(
