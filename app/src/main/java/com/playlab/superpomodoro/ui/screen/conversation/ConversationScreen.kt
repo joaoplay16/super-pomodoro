@@ -57,6 +57,7 @@ fun ConversationScreen(
     onArrowBackPressed: ()  -> Unit,
     groupId: String,
     groupName: String,
+    onGroupNameClick: () -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -68,7 +69,7 @@ fun ConversationScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Row(
-                    modifier = Modifier,
+                    modifier = Modifier.clickable { onGroupNameClick() },
                     verticalAlignment = Alignment.CenterVertically
                 ){
                     Icon(
@@ -226,7 +227,8 @@ fun SettingsScreenPreview() {
                 onArrowBackPressed = {},
                 chatViewModel = null,
                 groupId = "",
-                groupName = "Study group"
+                groupName = "Study group",
+                onGroupNameClick = {}
             )
         }
     }
