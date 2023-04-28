@@ -69,7 +69,6 @@ fun ConversationScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Row(
-                    modifier = Modifier.clickable { onGroupNameClick() },
                     verticalAlignment = Alignment.CenterVertically
                 ){
                     Icon(
@@ -82,6 +81,7 @@ fun ConversationScreen(
                         contentDescription = stringResource(id = R.string.arrow_back_icon_content_description)
                     )
                     TextLabel(
+                        modifier = Modifier.clickable { onGroupNameClick() },
                         text = groupName,
                         textStyle = MaterialTheme.typography.subtitle2,
                         fontSize = dimensionResource(id = R.dimen.screen_title_font_size).value.sp
