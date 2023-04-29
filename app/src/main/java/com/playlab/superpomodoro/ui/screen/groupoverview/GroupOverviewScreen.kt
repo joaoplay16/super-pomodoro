@@ -1,6 +1,7 @@
 package com.playlab.superpomodoro.ui.screen.groupoverview
 
 import android.widget.Toast
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -52,11 +54,13 @@ import com.playlab.superpomodoro.ui.components.GroupMemberItem
 import com.playlab.superpomodoro.ui.components.TextLabel
 import com.playlab.superpomodoro.ui.screen.ChatViewModel
 import com.playlab.superpomodoro.ui.screen.DevicesPreviews
+import com.playlab.superpomodoro.ui.theme.Gray400
 import com.playlab.superpomodoro.ui.theme.SuperPomodoroTheme
 import com.playlab.superpomodoro.ui.validators.InputValidator
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun GroupOverviewScreen(
     modifier: Modifier = Modifier,
@@ -133,6 +137,8 @@ fun GroupOverviewScreen(
 
         var members by remember { mutableStateOf<List<User>>(emptyList()) }
 
+        val currentUserId = chatViewModel?.currentUser?.value?.userId
+
         LaunchedEffect(key1 = isMemberAdded, block = {
             chatViewModel
                 ?.getGroupMembers(group.groupId!!)
@@ -148,62 +154,65 @@ fun GroupOverviewScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
-            // TITLE
-            Row(Modifier.fillMaxWidth()) {
-                TextLabel(
-                    text = stringResource(id = R.string.add_members_title),
-                    textStyle = MaterialTheme.typography.subtitle1,
-                    fontSize = 24.sp,
-                    maxLines = 2
-                )
-            }
-            Spacer(modifier = Modifier.padding(12.dp))
-            // EMAIL
-            FormInput(
-                Modifier.fillMaxWidth(),
-                text = userEmail,
-                isError = isEmailValid.not(),
-                errorMessage =
-                if(isEmailValid.not())
-                    stringResource(id = R.string.invalid_email_error)
-                else null,
-                onTextChange = { userEmail = it },
-                leadingIcon = Icons.Default.Email,
-                placeholder = stringResource(id = R.string.input_email),
-                keyboardOptions = KeyboardOptions(
-                    imeAction = ImeAction.Done,
-                    keyboardType = KeyboardType.Email
-                ),
-
-                onImeAction = {
-                    isEmailValid = InputValidator.emailIsValid(userEmail)
-                    if(isEmailValid.not()) return@FormInput
-                    coroutineScope.launch {
-                        chatViewModel?.addMemberToGroup(userEmail, group.groupId!!)
-                            ?.catch{ exception ->
-                                when(exception.cause){
-                                    is UserAlreadyInTheGroupException -> {
-                                        Toast.makeText(
-                                            context,
-                                            R.string.user_already_in_the_group_error,
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-                                    else -> {
-                                        Toast.makeText(
-                                            context,
-                                            R.string.user_not_found_error,
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-                                }
-
-                            }?.collect { added ->
-                                isMemberAdded = Pair(userEmail, added == true)
-                            }
+            if(currentUserId == group.adminId) {
+                Column {
+                    // TITLE
+                    Row(Modifier.fillMaxWidth()) {
+                        TextLabel(
+                            text = stringResource(id = R.string.add_members_title),
+                            textStyle = MaterialTheme.typography.subtitle1,
+                            fontSize = 24.sp,
+                            maxLines = 2
+                        )
                     }
+                    Spacer(modifier = Modifier.padding(12.dp))
+                    // EMAIL
+                    FormInput(
+                        Modifier.fillMaxWidth(),
+                        text = userEmail,
+                        isError = isEmailValid.not(),
+                        errorMessage =
+                        if (isEmailValid.not())
+                            stringResource(id = R.string.invalid_email_error)
+                        else null,
+                        onTextChange = { userEmail = it },
+                        leadingIcon = Icons.Default.Email,
+                        placeholder = stringResource(id = R.string.input_email),
+                        keyboardOptions = KeyboardOptions(
+                            imeAction = ImeAction.Done,
+                            keyboardType = KeyboardType.Email
+                        ),
+                        onImeAction = {
+                            isEmailValid = InputValidator.emailIsValid(userEmail)
+                            if (isEmailValid.not()) return@FormInput
+                            coroutineScope.launch {
+                                chatViewModel.addMemberToGroup(userEmail, group.groupId!!)
+                                    .catch { exception ->
+                                        when (exception.cause) {
+                                            is UserAlreadyInTheGroupException -> {
+                                                Toast.makeText(
+                                                    context,
+                                                    R.string.user_already_in_the_group_error,
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                            }
+
+                                            else -> {
+                                                Toast.makeText(
+                                                    context,
+                                                    R.string.user_not_found_error,
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                            }
+                                        }
+                                    }.collect { added ->
+                                        isMemberAdded = Pair(userEmail, added == true)
+                                    }
+                            }
+                        }
+                    )
                 }
-            )
+            }
 
             if (members.isEmpty().not()) {
                 LazyColumn(
@@ -211,6 +220,15 @@ fun GroupOverviewScreen(
                         .padding(top = 24.dp)
                         .fillMaxWidth()
                 ) {
+                    stickyHeader {
+                        Spacer(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 4.dp, bottom = 12.dp)
+                                .height(1.dp)
+                                .background(Gray400.copy(0.5f))
+                        )
+                    }
                     items(members, key = { it.userId!! }) { member ->
                         GroupMemberItem(
                             profilePictureUrl = member.profileUrl,
@@ -231,7 +249,7 @@ fun AddGroupMemberScreenPreview() {
         Surface {
             val group = Group(
                 "0",
-                        "0",
+                "0",
                 "Study group",
                 thumbnailUrl = null
             )
