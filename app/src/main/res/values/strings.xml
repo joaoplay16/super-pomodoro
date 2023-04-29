@@ -33,7 +33,7 @@
     <string name="input_group_name_placeholder">Group name</string>
     <string name="create_group_dialog_button_create">Create</string>
     <string name="user_not_found_error">User not found</string>
-    <string name="invalid_email_error">Invalid email\n</string>
+    <string name="invalid_email_error">Invalid email</string>
     <string name="user_already_in_the_group_error">This user is already in the group</string>
     <string name="group_creation_message">you have created the group</string>
     <string name="added_to_the_group_message">you\'ve been added</string>
@@ -48,4 +48,8 @@
     <string name="delete_the_group_menu_option">Delete group</string>
     <string name="remove_the_member_dialog_text">Remove this user?</string>
     <string name="invalid_password_error">Invalid password</string>
+    <string name="invalid_username_length_error">Username must have at least %d characters</string>
+    <string name="invalid_password_length_error">Password must have at least %d characters</string>
+    <string name="invalid_repeat_password_length_error">Repeat password must have at least %d characters</string>
+    <string name="passwords_did_not_match_error">Passwords did not match</string>
 </resources>

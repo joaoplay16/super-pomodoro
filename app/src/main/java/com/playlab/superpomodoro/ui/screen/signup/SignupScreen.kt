@@ -29,10 +29,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -45,6 +47,9 @@ import com.playlab.superpomodoro.ui.components.TextLabel
 import com.playlab.superpomodoro.ui.screen.ChatViewModel
 import com.playlab.superpomodoro.ui.screen.DevicesPreviews
 import com.playlab.superpomodoro.ui.theme.SuperPomodoroTheme
+import com.playlab.superpomodoro.ui.validators.InputValidator
+import com.playlab.superpomodoro.util.Constants.MIN_PASSWORD_LENGTH
+import com.playlab.superpomodoro.util.Constants.MIN_USERNAME_LENGTH
 
 @Composable
 fun SignupScreen(
@@ -85,6 +90,8 @@ fun SignupScreen(
         }
     ) { paddingValues ->
 
+        val context = LocalContext.current
+
         var email by remember { mutableStateOf("") }
         var username by remember { mutableStateOf("") }
         var password by remember { mutableStateOf("") }
@@ -99,6 +106,28 @@ fun SignupScreen(
 
             else -> null
         }
+
+        var isEmailValid by remember { mutableStateOf (true) }
+        var isUserNameLengthValid by remember { mutableStateOf (true) }
+        var isPasswordLengthValid by remember { mutableStateOf (true) }
+        var isRepeatPasswordLengthValid by remember { mutableStateOf (true) }
+        var repeatPasswordMatch by remember { mutableStateOf (true) }
+
+        val validateInputs: () -> Unit = {
+            isEmailValid = InputValidator.emailIsValid(email)
+            isUserNameLengthValid = username.length >= MIN_USERNAME_LENGTH
+            repeatPasswordMatch = password == repeatPassword
+            isPasswordLengthValid = password.length >= MIN_PASSWORD_LENGTH
+            isRepeatPasswordLengthValid = repeatPassword.length >= MIN_PASSWORD_LENGTH
+        }
+
+        val areAllInputsValid = (
+            isEmailValid &&
+            isUserNameLengthValid &&
+            isPasswordLengthValid &&
+            isRepeatPasswordLengthValid &&
+            repeatPasswordMatch
+        )
 
         Column(
             modifier = modifier.fillMaxSize()
@@ -121,6 +150,8 @@ fun SignupScreen(
             FormInput(
                 text = email,
                 onTextChange = { email = it },
+                isError = isEmailValid.not(),
+                errorMessage = stringResource(id = R.string.invalid_email_error),
                 leadingIcon = Icons.Default.Email,
                 placeholder = stringResource(id = R.string.input_email),
                 keyboardOptions = KeyboardOptions(
@@ -132,6 +163,10 @@ fun SignupScreen(
             // USERNAME
             FormInput(
                 text = username,
+                isError = isUserNameLengthValid.not(),
+                errorMessage = context.getString(
+                    R.string.invalid_username_length_error, MIN_USERNAME_LENGTH
+                ),
                 onTextChange = { username = it },
                 leadingIcon = Icons.Default.Person,
                 placeholder = stringResource(id = R.string.input_username),
@@ -143,26 +178,43 @@ fun SignupScreen(
             Spacer(modifier = Modifier.padding(8.dp))
             //PASSWORD
             FormInput(
-                text = password,
+                text = password.replace(".", ""),
+                isError = isPasswordLengthValid.not(),
+                errorMessage = context.getString(
+                    R.string.invalid_password_length_error, MIN_PASSWORD_LENGTH
+                ),
                 onTextChange = { password = it },
                 leadingIcon = Icons.Default.Key,
                 placeholder = stringResource(id = R.string.input_password),
                 keyboardOptions = KeyboardOptions(
                     imeAction = ImeAction.Next,
                     keyboardType = KeyboardType.Password
-                )
+                ),
+                visualTransformation = PasswordVisualTransformation()
             )
             Spacer(modifier = Modifier.padding(8.dp))
             // REPEAT PASSWORD
             FormInput(
                 text = repeatPassword,
+                isError = isRepeatPasswordLengthValid.not() || repeatPasswordMatch.not(),
+                errorMessage =
+                if(isRepeatPasswordLengthValid.not()) {
+                    context.getString(
+                        R.string.invalid_password_length_error, MIN_PASSWORD_LENGTH
+                    )
+                } else if(repeatPasswordMatch.not()){
+                    context.getString(
+                        R.string.passwords_did_not_match_error
+                    )
+                } else null,
                 onTextChange = { repeatPassword = it },
                 leadingIcon = Icons.Default.Key,
                 placeholder = stringResource(id = R.string.input_repeat_password),
                 keyboardOptions = KeyboardOptions(
                     imeAction = ImeAction.Next,
                     keyboardType = KeyboardType.Password
-                )
+                ),
+                visualTransformation = PasswordVisualTransformation()
             )
             Spacer(modifier = Modifier.padding(8.dp))
             // REGISTER BUTTON
@@ -170,14 +222,17 @@ fun SignupScreen(
                 modifier = Modifier.fillMaxWidth(),
                 shape = MaterialTheme.shapes.large,
                 onClick = {
-                    chatViewModel?.createUser(
-                        User(
-                            username = username,
-                            email = email
-                        ), password
-                    )
-                    if(chatViewModel?.currentUser?.value != null) {
-                        onSignUpSuccess()
+                    validateInputs()
+                    if(areAllInputsValid){
+                        chatViewModel?.createUser(
+                            User(
+                                username = username,
+                                email = email
+                            ), password
+                        )
+                        if(chatViewModel?.currentUser?.value != null) {
+                            onSignUpSuccess()
+                        }
                     }
                 }
             ) {
