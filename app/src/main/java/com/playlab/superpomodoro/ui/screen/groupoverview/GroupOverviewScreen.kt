@@ -100,8 +100,8 @@ fun GroupOverviewScreen(
                     val imageRequest = remember {
                         ImageRequest.Builder(context)
                             .data(group.thumbnailUrl)
-                            .error(R.drawable.default_avatar)
-                            .placeholder(R.drawable.default_avatar)
+                            .error(R.drawable.crowd)
+                            .placeholder(R.drawable.crowd)
                             .crossfade(300)
                             .build()
                     }
