@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,10 +19,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Email
@@ -38,6 +42,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -71,6 +76,10 @@ fun GroupOverviewScreen(
     chatViewModel: ChatViewModel? = hiltViewModel()
 ) {
     val context = LocalContext.current
+    var isOptionMenuOpen by remember { mutableStateOf(false) }
+    var showDeleteGroupDialog by remember{ mutableStateOf(false) }
+    val currentUserId = chatViewModel?.currentUser?.value?.userId
+    val isCurrentUserAdmin = currentUserId == group.adminId
 
     Scaffold(
         topBar = {
@@ -81,8 +90,9 @@ fun GroupOverviewScreen(
                     .background(MaterialTheme.colors.surface),
             ) {
                 Row(
-                    modifier = Modifier,
-                    verticalAlignment = Alignment.CenterVertically
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Icon(
                         modifier = Modifier
@@ -92,6 +102,36 @@ fun GroupOverviewScreen(
                         imageVector = Icons.Default.ArrowBack,
                         contentDescription = stringResource(id = R.string.arrow_back_icon_content_description)
                     )
+                    if (isCurrentUserAdmin) {
+                        Box(
+                            modifier = Modifier
+                                .clickable(onClick = { isOptionMenuOpen = true })
+                        ) {
+                            Icon(
+                                modifier = Modifier,
+                                painter = painterResource(id = R.drawable.dots_vertical),
+                                contentDescription = stringResource(id = R.string.menu_icon_cd)
+                            )
+
+                            DropdownMenu(
+                                expanded = isOptionMenuOpen,
+                                onDismissRequest = { isOptionMenuOpen = false }
+                            ) {
+                                DropdownMenuItem(
+                                    onClick = {
+                                        showDeleteGroupDialog = true
+                                        isOptionMenuOpen = false
+                                    }
+                                ) {
+                                    Text(
+                                        text = stringResource(id = R.string.delete_the_group_menu_option),
+                                        fontSize = 18.sp,
+                                        style = MaterialTheme.typography.body1
+                                    )
+                                }
+                            }
+                        }
+                    }
                 }
                 Row(
                     modifier = Modifier.padding(top = 8.dp),
@@ -139,11 +179,7 @@ fun GroupOverviewScreen(
 
         var members by remember { mutableStateOf<List<User>>(emptyList()) }
 
-        val currentUserId = chatViewModel?.currentUser?.value?.userId
-
-        val isCurrentUserAdmin = currentUserId == group.adminId
-
-        var showActionDialog by remember{ mutableStateOf(false) }
+        var showRemoveMemberDialog by remember{ mutableStateOf(false) }
 
         var selectedUserToRemove by remember { mutableStateOf<User?>(null)}
 
@@ -240,19 +276,19 @@ fun GroupOverviewScreen(
                     items(members, key = { it.userId!! }) { member ->
                         GroupMemberItem(
                             modifier = Modifier.
-                                then(
-                                    Modifier.combinedClickable(
-                                        onLongClick = {
-                                            if(isCurrentUserAdmin){
-                                                selectedUserToRemove = member
-                                                showActionDialog = true
-                                            }else{
-                                                Modifier
-                                            }
-                                        },
-                                        onClick ={}
-                                    )
-                                ),
+                            then(
+                                Modifier.combinedClickable(
+                                    onLongClick = {
+                                        if(isCurrentUserAdmin){
+                                            selectedUserToRemove = member
+                                            showRemoveMemberDialog = true
+                                        }else{
+                                            Modifier
+                                        }
+                                    },
+                                    onClick ={}
+                                )
+                            ),
                             profilePictureUrl = member.profileUrl,
                             name = member.email
                         )
@@ -262,18 +298,30 @@ fun GroupOverviewScreen(
             }
         }
 
-        if(showActionDialog){
+        if(showRemoveMemberDialog){
             selectedUserToRemove?.let {
                 ActionDialog(
                     title = it.username,
-                    text = stringResource(id = R.string.remove_the_user_dialog_text),
-                    onDismissRequest = { showActionDialog = false },
+                    text = stringResource(id = R.string.remove_the_member_dialog_text),
+                    onDismissRequest = { showRemoveMemberDialog = false },
                     onOkClick = {
 
                     },
-                    onCancelClick = { showActionDialog = false }
+                    onCancelClick = { showRemoveMemberDialog = false }
                 )
             }
+        }
+
+        if(showDeleteGroupDialog){
+            ActionDialog(
+                title = group.name,
+                text = stringResource(id = R.string.delete_the_group_dialog_text),
+                onDismissRequest = { showDeleteGroupDialog = false },
+                onOkClick = {
+
+                },
+                onCancelClick = { showDeleteGroupDialog = false }
+            )
         }
     }
 }
