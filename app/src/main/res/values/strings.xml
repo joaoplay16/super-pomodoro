@@ -44,4 +44,5 @@
     <string name="action_dialog_button_ok">ok</string>
     <string name="action_dialog_button_cancel">cancel</string>
     <string name="leave_the_group_dialog_text">Leave the group?</string>
+    <string name="remove_the_user_dialog_text">Remove this user?</string>
 </resources>

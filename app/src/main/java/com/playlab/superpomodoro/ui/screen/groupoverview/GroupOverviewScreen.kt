@@ -4,6 +4,7 @@ import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -49,6 +50,7 @@ import com.playlab.superpomodoro.R
 import com.playlab.superpomodoro.exeception.UserAlreadyInTheGroupException
 import com.playlab.superpomodoro.model.Group
 import com.playlab.superpomodoro.model.User
+import com.playlab.superpomodoro.ui.components.ActionDialog
 import com.playlab.superpomodoro.ui.components.FormInput
 import com.playlab.superpomodoro.ui.components.GroupMemberItem
 import com.playlab.superpomodoro.ui.components.TextLabel
@@ -139,6 +141,12 @@ fun GroupOverviewScreen(
 
         val currentUserId = chatViewModel?.currentUser?.value?.userId
 
+        val isCurrentUserAdmin = currentUserId == group.adminId
+
+        var showActionDialog by remember{ mutableStateOf(false) }
+
+        var selectedUserToRemove by remember { mutableStateOf<User?>(null)}
+
         LaunchedEffect(key1 = isMemberAdded, block = {
             chatViewModel
                 ?.getGroupMembers(group.groupId!!)
@@ -154,7 +162,7 @@ fun GroupOverviewScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
-            if(currentUserId == group.adminId) {
+            if(isCurrentUserAdmin) {
                 Column {
                     // TITLE
                     Row(Modifier.fillMaxWidth()) {
@@ -186,8 +194,8 @@ fun GroupOverviewScreen(
                             isEmailValid = InputValidator.emailIsValid(userEmail)
                             if (isEmailValid.not()) return@FormInput
                             coroutineScope.launch {
-                                chatViewModel.addMemberToGroup(userEmail, group.groupId!!)
-                                    .catch { exception ->
+                                chatViewModel?.addMemberToGroup(userEmail, group.groupId!!)
+                                    ?.catch { exception ->
                                         when (exception.cause) {
                                             is UserAlreadyInTheGroupException -> {
                                                 Toast.makeText(
@@ -205,7 +213,7 @@ fun GroupOverviewScreen(
                                                 ).show()
                                             }
                                         }
-                                    }.collect { added ->
+                                    }?.collect { added ->
                                         isMemberAdded = Pair(userEmail, added == true)
                                     }
                             }
@@ -231,12 +239,40 @@ fun GroupOverviewScreen(
                     }
                     items(members, key = { it.userId!! }) { member ->
                         GroupMemberItem(
+                            modifier = Modifier.
+                                then(
+                                    Modifier.combinedClickable(
+                                        onLongClick = {
+                                            if(isCurrentUserAdmin){
+                                                selectedUserToRemove = member
+                                                showActionDialog = true
+                                            }else{
+                                                Modifier
+                                            }
+                                        },
+                                        onClick ={}
+                                    )
+                                ),
                             profilePictureUrl = member.profileUrl,
                             name = member.email
                         )
                         Spacer(modifier = Modifier.padding(4.dp))
                     }
                 }
+            }
+        }
+
+        if(showActionDialog){
+            selectedUserToRemove?.let {
+                ActionDialog(
+                    title = it.username,
+                    text = stringResource(id = R.string.remove_the_user_dialog_text),
+                    onDismissRequest = { showActionDialog = false },
+                    onOkClick = {
+
+                    },
+                    onCancelClick = { showActionDialog = false }
+                )
             }
         }
     }
