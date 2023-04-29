@@ -37,6 +37,7 @@ import com.playlab.superpomodoro.ui.components.TextLabel
 import com.playlab.superpomodoro.ui.screen.ChatViewModel
 import com.playlab.superpomodoro.ui.screen.DevicesPreviews
 import com.playlab.superpomodoro.ui.theme.SuperPomodoroTheme
+import com.playlab.superpomodoro.ui.validators.InputValidator.emailIsValid
 
 @Composable
 fun LoginScreen(
@@ -44,7 +45,6 @@ fun LoginScreen(
     chatViewModel: ChatViewModel?,
     onSignUpLabelClick: () -> Unit = {}
 ) {
-    // TODO validate email and password
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -56,6 +56,18 @@ fun LoginScreen(
             stringResource(id = R.string.invalid_user_error)
         else -> null
     }
+
+    var isEmailValid by remember { mutableStateOf (true) }
+    var isPasswordValid by remember { mutableStateOf (true) }
+
+    val validateInputs: () -> Unit = {
+        isEmailValid = emailIsValid(email)
+        isPasswordValid = password.isNotBlank()
+    }
+
+    val areAllInputsValid =
+        isEmailValid && isPasswordValid
+
 
     Column(
         modifier = modifier,
@@ -76,6 +88,8 @@ fun LoginScreen(
         FormInput(
             text = email,
             onTextChange = { email = it },
+            isError = isEmailValid.not(),
+            errorMessage = stringResource(id = R.string.invalid_email_error),
             leadingIcon =  Icons.Default.Email,
             placeholder = stringResource(id = R.string.input_email),
             keyboardOptions = KeyboardOptions(
@@ -87,7 +101,9 @@ fun LoginScreen(
         // PASSWORD
         FormInput(
             text = password,
-            onTextChange = { password = it},
+            onTextChange = { password = it },
+            isError = isPasswordValid.not(),
+            errorMessage = stringResource(id = R.string.invalid_password_error),
             leadingIcon =  Icons.Default.Key,
             placeholder = stringResource(id = R.string.input_password),
             keyboardOptions = KeyboardOptions(
@@ -101,7 +117,8 @@ fun LoginScreen(
             modifier = Modifier.fillMaxWidth(),
             shape = MaterialTheme.shapes.large,
             onClick = {
-                chatViewModel?.login(email, password)
+                validateInputs()
+                if(areAllInputsValid) chatViewModel?.login(email, password)
             }) {
             Text(
                 modifier = Modifier.padding(4.dp),

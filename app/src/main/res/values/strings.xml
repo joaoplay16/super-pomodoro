@@ -47,4 +47,5 @@
     <string name="delete_the_group_dialog_text">Are you sure that you want to delete this group?</string>
     <string name="delete_the_group_menu_option">Delete group</string>
     <string name="remove_the_member_dialog_text">Remove this user?</string>
+    <string name="invalid_password_error">Invalid password</string>
 </resources>
