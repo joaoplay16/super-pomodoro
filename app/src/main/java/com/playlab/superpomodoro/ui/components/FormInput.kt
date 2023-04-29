@@ -1,5 +1,6 @@
 package com.playlab.superpomodoro.ui.components
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -46,7 +47,9 @@ fun FormInput(
     onImeAction: () -> Unit = {},
     visualTransformation: VisualTransformation = VisualTransformation.None
 ) {
-    Column {
+    Column(
+        modifier = Modifier.animateContentSize(),
+    ) {
 
         OutlinedTextField(
             modifier = modifier
