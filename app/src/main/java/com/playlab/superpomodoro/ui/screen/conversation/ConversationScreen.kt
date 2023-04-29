@@ -48,6 +48,7 @@ import com.playlab.superpomodoro.ui.screen.DevicesPreviews
 import com.playlab.superpomodoro.ui.theme.Banana100
 import com.playlab.superpomodoro.ui.theme.Olive100
 import com.playlab.superpomodoro.ui.theme.SuperPomodoroTheme
+import com.playlab.superpomodoro.util.TimeUtil.toFormattedTimeString
 import kotlinx.coroutines.launch
 import kotlin.math.max
 
@@ -184,7 +185,7 @@ fun ConversationScreen(
                             MessageItem(
                                 text = message.text,
                                 senderName = if(isThisUser) null else user.username ,
-                                date = "${message.timestamp}",
+                                date = message.timestamp.toFormattedTimeString(),
                                 backgroundColor = if(isThisUser) Banana100 else Olive100
                             )
                         }
