@@ -1,4 +1,4 @@
-package com.playlab.superpomodoro.exeception
+package com.playlab.superpomodoro.exception
 
 import java.lang.Exception
 

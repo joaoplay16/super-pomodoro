@@ -52,7 +52,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.playlab.superpomodoro.R
-import com.playlab.superpomodoro.exeception.UserAlreadyInTheGroupException
+import com.playlab.superpomodoro.exception.UserAlreadyInTheGroupException
 import com.playlab.superpomodoro.model.Group
 import com.playlab.superpomodoro.model.User
 import com.playlab.superpomodoro.ui.components.ActionDialog

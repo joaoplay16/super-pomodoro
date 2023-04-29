@@ -5,9 +5,9 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import com.playlab.superpomodoro.exeception.GroupNotFoundException
-import com.playlab.superpomodoro.exeception.UserAlreadyInTheGroupException
-import com.playlab.superpomodoro.exeception.UserNotFoundException
+import com.playlab.superpomodoro.exception.GroupNotFoundException
+import com.playlab.superpomodoro.exception.UserAlreadyInTheGroupException
+import com.playlab.superpomodoro.exception.UserNotFoundException
 import com.playlab.superpomodoro.model.Group
 import com.playlab.superpomodoro.model.Group.Companion.toGroup
 import com.playlab.superpomodoro.model.GroupMember
