@@ -22,6 +22,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import com.playlab.superpomodoro.ui.theme.Banana100
 import com.playlab.superpomodoro.ui.theme.Olive100
 import com.playlab.superpomodoro.ui.theme.SuperPomodoroTheme
+import com.playlab.superpomodoro.util.TimeUtil.toFormattedTimeString
 
 @Composable
 fun MessageItem(
@@ -86,14 +87,14 @@ fun PreviewMessageItem() {
                 MessageItem(
                     senderName = "Jimmy",
                     text = "Hi",
-                    date = "25/02/2023 18:25"
-                )
+                    date = System.currentTimeMillis().toFormattedTimeString(),
+                    )
                 Spacer(modifier = Modifier.padding(12.dp))
                 MessageItem(
                     senderName = "Mike",
                     text = "Lorem ipsum dolor sit amet. Sit accusamus corporis " +
                             "nam illo excepturi est molestias dolore est sint unde",
-                    date = "25/02/2023 18:25",
+                    date = System.currentTimeMillis().toFormattedTimeString(),
                     backgroundColor = Banana100
                 )
                 Spacer(modifier = Modifier.padding(12.dp))
@@ -101,7 +102,7 @@ fun PreviewMessageItem() {
                     senderName = null,
                     text = "Lorem ipsum dolor sit amet. Sit accusamus corporis " +
                             "nam illo excepturi est molestias dolore est sint unde",
-                    date = "25/02/2023 18:25",
+                    date = System.currentTimeMillis().toFormattedTimeString(),
                     backgroundColor = Banana100
                 )
             }
