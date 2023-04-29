@@ -55,7 +55,7 @@ fun CreateGroupDialog(
                 .clip(RoundedCornerShape(16.dp)),
             color = MaterialTheme.colors.surface) {
             Column (modifier = modifier
-                .padding(horizontal = 32.dp, vertical = 20.dp)
+                .padding(start = 32.dp, end= 32.dp, top = 20.dp, bottom = 16.dp)
             ){
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -94,6 +94,7 @@ fun CreateGroupDialog(
                         fontSize = 12.sp
                     )
                 }
+                Spacer(modifier = Modifier.padding(8.dp))
             }
         }
     }
