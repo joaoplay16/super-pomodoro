@@ -27,6 +27,7 @@ import com.playlab.superpomodoro.ui.components.GroupItem
 import com.playlab.superpomodoro.ui.screen.ChatViewModel
 import com.playlab.superpomodoro.ui.screen.DevicesPreviews
 import com.playlab.superpomodoro.ui.theme.SuperPomodoroTheme
+import com.playlab.superpomodoro.util.TimeUtil.toFormattedTimeString
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
@@ -93,7 +94,7 @@ fun GroupsScreen(
 
                 val lastMessageDate = if(lastMessage?.timestamp == null)
                     null
-                else "${lastMessage.timestamp}"
+                else lastMessage.timestamp.toFormattedTimeString()
 
                 val lastMessageText = lastMessage?.text ?:
                 if(currentUser?.userId == group.adminId)
