@@ -52,4 +52,5 @@
     <string name="invalid_password_length_error">Password must have at least %d characters</string>
     <string name="invalid_repeat_password_length_error">Repeat password must have at least %d characters</string>
     <string name="passwords_did_not_match_error">Passwords did not match</string>
+    <string name="empty_group_name_error">Write the group name!</string>
 </resources>

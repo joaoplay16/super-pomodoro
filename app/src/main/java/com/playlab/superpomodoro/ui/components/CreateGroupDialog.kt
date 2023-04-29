@@ -15,6 +15,10 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.GroupAdd
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
@@ -34,6 +38,15 @@ fun CreateGroupDialog(
     onGroupNameChange: (String) -> Unit,
     onButtonCreateClick: () -> Unit
 ) {
+
+    var isGroupNameValid by remember {
+        mutableStateOf(true)
+    }
+
+    val validateGroupName: () -> Unit = {
+        isGroupNameValid = groupName.isNotBlank()
+    }
+
     Dialog(
         onDismissRequest = onDismissRequest
     ) {
@@ -57,6 +70,8 @@ fun CreateGroupDialog(
                 Spacer(modifier = Modifier.padding(8.dp))
                 FormInput(
                     text = groupName,
+                    isError = isGroupNameValid.not(),
+                    errorMessage = stringResource(id = R.string.empty_group_name_error),
                     onTextChange = onGroupNameChange,
                     leadingIcon = Icons.Default.GroupAdd,
                     placeholder = stringResource(id = R.string.input_group_name_placeholder)
@@ -68,7 +83,10 @@ fun CreateGroupDialog(
                 ){
                     Text(
                         modifier = Modifier
-                            .clickable { onButtonCreateClick() }
+                            .clickable {
+                                validateGroupName()
+                                if(isGroupNameValid) onButtonCreateClick()
+                            }
                             .background(Gray100, RoundedCornerShape(16.dp))
                             .padding(horizontal = 16.dp, vertical = 8.dp)
                         ,
@@ -84,7 +102,7 @@ fun CreateGroupDialog(
 @Preview(showBackground = true)
 @Composable
 fun PreviewCreateGroupDialog() {
-    SuperPomodoroTheme {
+    SuperPomodoroTheme(false) {
         Surface {
             CreateGroupDialog(
                 groupName = "",
