@@ -48,7 +48,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.playlab.superpomodoro.R
@@ -319,7 +318,7 @@ fun GroupOverviewScreen(
                 text = stringResource(id = R.string.delete_the_group_dialog_text),
                 onDismissRequest = { showDeleteGroupDialog = false },
                 onOkClick = {
-                    chatViewModel?.deleteGroup(groupId = group.groupId!!)
+                    chatViewModel?.deleteGroup(group = group)
                     showDeleteGroupDialog = false
                     onDeleteGroup()
                 },

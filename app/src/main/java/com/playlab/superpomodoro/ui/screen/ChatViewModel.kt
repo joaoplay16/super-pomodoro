@@ -33,7 +33,7 @@ class ChatViewModel
     val loginUpError = _loginUpError
 
     private var _userGroupsWithLastMessage = mutableStateMapOf<Group, Message?>()
-    val userGroupsWithLastMessage = _userGroupsWithLastMessage
+    val userGroupsWithLastMessage get() = _userGroupsWithLastMessage
 
     private var _groupMessages = mutableStateMapOf<Message, User>()
     val groupMessages = _groupMessages
@@ -128,9 +128,11 @@ class ChatViewModel
         }
     }
 
-    fun deleteGroup(groupId: String){
+    fun deleteGroup(group: Group){
         viewModelScope.launch {
-            firebaseRepository.deleteGroup(groupId)
+            firebaseRepository.deleteGroup(group.groupId!!)
+            _userGroupsWithLastMessage.remove(group)
+            getUserGroupsWithLastMessage()
         }
     }
 }
