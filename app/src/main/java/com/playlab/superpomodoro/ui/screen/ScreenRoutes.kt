@@ -5,5 +5,6 @@ enum class ScreenRoutes {
     Settings,
     GameView,
     ChatSignup,
-    Conversation
+    Conversation,
+    GroupOverView
 }

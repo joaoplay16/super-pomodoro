@@ -19,6 +19,7 @@ import com.playlab.superpomodoro.model.Game
 import com.playlab.superpomodoro.model.Group
 import com.playlab.superpomodoro.ui.screen.PomodoroViewModel
 import com.playlab.superpomodoro.ui.screen.ScreenRoutes
+import com.playlab.superpomodoro.ui.screen.groupoverview.GroupOverviewScreen
 import com.playlab.superpomodoro.ui.screen.conversation.ConversationScreen
 import com.playlab.superpomodoro.ui.screen.gameview.GameView
 import com.playlab.superpomodoro.ui.screen.main.MainScreen
@@ -175,6 +176,27 @@ fun DefaultNavHost(
                     onLeaveGroup = {
                         navController.popBackStack()
                     }
+                )
+            }
+        }
+        composable(ScreenRoutes.GroupOverView.name) {
+            val group = navController
+                .previousBackStackEntry
+                ?.savedStateHandle
+                ?.get<Group>("group")
+
+            group?.let {
+                GroupOverviewScreen(
+                    group = group,
+                    onArrowBackPressed = {
+                        navController.popBackStack()
+                    },
+                    onDeleteGroup = {
+                        navController.popBackStack(
+                            route = ScreenRoutes.Main.name,
+                            inclusive = false
+                        )
+                    },
                 )
             }
         }
