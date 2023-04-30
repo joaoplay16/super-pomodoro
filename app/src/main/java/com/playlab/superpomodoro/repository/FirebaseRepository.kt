@@ -321,4 +321,22 @@ class FirebaseRepository
             null
         }
     }
+
+    suspend fun removeUserFromGroup(userId: String, groupId: String) {
+        try {
+            val groupMember = firebaseFirestore.collection(GROUP_MEMBERS_COLLECTION)
+                .whereEqualTo("userId", userId)
+                .whereEqualTo("groupId", groupId)
+                .limit(1)
+                .get()
+                .await().documents[0].toGroupMember()
+
+            val docRef = firebaseFirestore.collection(GROUP_MEMBERS_COLLECTION)
+                .document(groupMember?.id!!)
+
+            docRef.delete().await()
+        }catch (e: Exception) {
+            Log.e(TAG, "Error removing member from group ${e}")
+        }
+    }
 }
