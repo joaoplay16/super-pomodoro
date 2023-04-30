@@ -288,7 +288,8 @@ fun GroupOverviewScreen(
                                 )
                             ),
                             profilePictureUrl = member.profileUrl,
-                            name = member.username
+                            name = member.username,
+                            isAdmin = member.userId == currentUserId
                         )
                         Spacer(modifier = Modifier.padding(4.dp))
                     }
