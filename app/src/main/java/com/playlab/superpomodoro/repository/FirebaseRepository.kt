@@ -5,7 +5,6 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import com.playlab.superpomodoro.exception.GroupNotFoundException
 import com.playlab.superpomodoro.exception.UserAlreadyInTheGroupException
 import com.playlab.superpomodoro.exception.UserNotFoundException
 import com.playlab.superpomodoro.model.Group
@@ -234,24 +233,30 @@ class FirebaseRepository
      * Get the groups that the current user is currently a member of,
      * including the last message sent to the group
      **/
-    suspend fun getUserGroupsWithLastMessage() : Map<Group, Message?> {
-        return try {
-           val currentUser = getCurrentUserFromFirestore().first()
-           firebaseFirestore.collection(GROUP_MEMBERS_COLLECTION)
-               .whereEqualTo("userId", currentUser?.userId)
-               .get()
-               .await()
-               .documents
-               .map {
-                   it.toGroupMember()
-               }.map {
-                   getGroupById(it!!.groupId)!!
-               }.associateWith {
-                   getGroupLastMessage(it.groupId!!)
-               }
-        }catch (e: Exception){
-            Log.e(TAG,"Error fetching user groups")
-            emptyMap()
+    fun getUserGroupsWithLastMessage() : Flow<Map<Group, Message?>> {
+        return callbackFlow {
+            val currentUser = getCurrentUserFromFirestore().first()
+            firebaseFirestore.collection(GROUP_MEMBERS_COLLECTION)
+                .whereEqualTo("userId", currentUser?.userId)
+                .addSnapshotListener { querySnapshot, exception ->
+                    if (exception != null){
+                        cancel("Error fetching user groups", exception)
+                    }else{
+                        launch {
+                            val groupMessages = querySnapshot?.documents
+                                ?.map {
+                                    it.toGroupMember()
+                                }?.map {
+                                    async { getGroupById(it!!.groupId) }.await()!!
+                                }?.associateWith {
+                                    async {getGroupLastMessage(it.groupId!!)}.await()
+                            }.orEmpty()
+                            trySend(groupMessages)
+                        }
+                    }
+                }
+
+            awaitClose()
         }
     }
 
@@ -262,7 +267,7 @@ class FirebaseRepository
                 .get().await().toGroup()
         } catch (e: Exception){
             Log.e(TAG, "Error fetching group by id")
-            throw  GroupNotFoundException()
+           null
         }
     }
 

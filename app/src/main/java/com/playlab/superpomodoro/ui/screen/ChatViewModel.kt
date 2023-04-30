@@ -32,9 +32,6 @@ class ChatViewModel
     private var _loginUpError = mutableStateOf<Throwable?>(null)
     val loginUpError = _loginUpError
 
-    private var _userGroupsWithLastMessage = mutableStateMapOf<Group, Message?>()
-    val userGroupsWithLastMessage get() = _userGroupsWithLastMessage
-
     private var _groupMessages = mutableStateMapOf<Message, User>()
     val groupMessages = _groupMessages
 
@@ -65,7 +62,6 @@ class ChatViewModel
         _isLoggedIn.value = false
         _signUpError.value = null
         _loginUpError.value = null
-        _userGroupsWithLastMessage.clear()
         _groupMessages.clear()
     }
 
@@ -104,10 +100,8 @@ class ChatViewModel
         return firebaseRepository.getGroupMembers(groupId)
     }
 
-    suspend fun getUserGroupsWithLastMessage() {
-        viewModelScope.launch {
-         _userGroupsWithLastMessage.putAll(firebaseRepository.getUserGroupsWithLastMessage())
-        }
+    fun getUserGroupsWithLastMessage() : Flow<Map<Group, Message?>> {
+        return firebaseRepository.getUserGroupsWithLastMessage()
     }
 
     suspend fun sendMessageToGroup(message: Message): Boolean{
@@ -115,6 +109,7 @@ class ChatViewModel
     }
 
     fun getGroupMessages(groupId: String) {
+        _groupMessages.clear()
         viewModelScope.launch {
             firebaseRepository.getGroupMessages(groupId).collect{ map ->
                 _groupMessages.putAll(map)
@@ -131,7 +126,6 @@ class ChatViewModel
     fun deleteGroup(group: Group){
         viewModelScope.launch {
             firebaseRepository.deleteGroup(group.groupId!!)
-            _userGroupsWithLastMessage.remove(group)
         }
     }
 }
