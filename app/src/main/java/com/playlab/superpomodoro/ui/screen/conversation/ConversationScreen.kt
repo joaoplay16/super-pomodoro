@@ -64,7 +64,8 @@ fun ConversationScreen(
 ) {
     var showActionDialog by remember{ mutableStateOf(false) }
     var isOptionMenuOpen by remember { mutableStateOf(false) }
-
+    val currentUserId = chatViewModel?.currentUser?.value?.userId
+    val isAdmin = currentUserId == groupId
     Scaffold(
         topBar = {
             Row(
@@ -93,8 +94,7 @@ fun ConversationScreen(
                         fontSize = dimensionResource(id = R.dimen.screen_title_font_size).value.sp
                     )
                 }
-                Row{
-
+                if(isAdmin) {
                     Box(
                         modifier = Modifier
                             .clickable(onClick = { isOptionMenuOpen = true })
@@ -130,8 +130,6 @@ fun ConversationScreen(
 
 
         var messageText by remember {mutableStateOf("")}
-
-        val currentUserId = chatViewModel?.currentUser?.value?.userId
 
         val coroutineScope = rememberCoroutineScope()
 
@@ -230,6 +228,9 @@ fun ConversationScreen(
                 text = stringResource(id = R.string.leave_the_group_dialog_text),
                 onDismissRequest = { showActionDialog = false },
                 onOkClick = {
+                    if (currentUserId != null) {
+                        chatViewModel.removeUserFromGroup(currentUserId, groupId)
+                    }
                     onLeaveGroup()
                 },
                 onCancelClick = { showActionDialog = false }
