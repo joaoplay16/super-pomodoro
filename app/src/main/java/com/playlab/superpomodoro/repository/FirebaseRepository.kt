@@ -340,23 +340,6 @@ class FirebaseRepository
         }
     }
 
-    suspend fun removeMemberMessages(userId: String, groupId: String) {
-        try {
-           firebaseFirestore.collection(MESSAGES_COLLECTION)
-                .whereEqualTo("userId", userId)
-                .whereEqualTo("groupId", groupId)
-                .get()
-                .await().documents.forEach{
-                    val message = it.toMessage()
-                    val docRef = firebaseFirestore.collection(MESSAGES_COLLECTION)
-                        .document(message?.messageId!!)
-                    docRef.delete().await()
-                }
-        }catch (e: Exception) {
-            Log.e(TAG, "Error removing member messages from group ${e}")
-        }
-    }
-
     suspend fun deleteGroup(groupId: String) {
         try {
             removeAllGroupMessages(groupId)
