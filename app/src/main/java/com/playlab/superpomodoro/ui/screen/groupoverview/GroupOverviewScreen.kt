@@ -318,7 +318,8 @@ fun GroupOverviewScreen(
                 text = stringResource(id = R.string.delete_the_group_dialog_text),
                 onDismissRequest = { showDeleteGroupDialog = false },
                 onOkClick = {
-
+                    chatViewModel?.deleteGroup(groupId = group.groupId!!)
+                    showDeleteGroupDialog = false
                 },
                 onCancelClick = { showDeleteGroupDialog = false }
             )
