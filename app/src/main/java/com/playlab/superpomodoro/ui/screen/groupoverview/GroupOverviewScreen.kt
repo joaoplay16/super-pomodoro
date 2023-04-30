@@ -183,12 +183,16 @@ fun GroupOverviewScreen(
 
         var selectedUserToRemove by remember { mutableStateOf<User?>(null)}
 
-        LaunchedEffect(key1 = isMemberAdded, block = {
-            chatViewModel
-                ?.getGroupMembers(group.groupId!!)
-                ?.let { members = it }
-            userEmail = ""
-        })
+        LaunchedEffect(
+            key1 = selectedUserToRemove == null,
+            key2 = isMemberAdded,
+            block = {
+                chatViewModel
+                    ?.getGroupMembers(group.groupId!!)
+                    ?.let { members = it }
+                userEmail = ""
+            }
+        )
 
         Column(
             modifier = modifier
@@ -274,22 +278,31 @@ fun GroupOverviewScreen(
                         )
                     }
                     items(members, key = { it.userId!! }) { member ->
+                        // member in the list
+                        val isMemberAdmin = member.userId == group.adminId
+
                         GroupMemberItem(
                             modifier = Modifier.
                             then(
-                                Modifier.combinedClickable(
-                                    onLongClick = {
-                                        if(isCurrentUserAdmin){
-                                            selectedUserToRemove = member
-                                            showRemoveMemberDialog = true
-                                        }
-                                    },
-                                    onClick ={}
-                                )
+                                if(isCurrentUserAdmin.not()){
+                                    Modifier // current logged user isn't admin don't make it clickable
+                                }else{
+                                    // current logged user is admin so make it clickable
+                                    Modifier.combinedClickable(
+                                        onLongClick = {
+                                            if(isMemberAdmin.not()){ // prevent admin remove himself
+                                                selectedUserToRemove = member
+                                                showRemoveMemberDialog = true
+                                            }
+                                        },
+                                        onClick ={}
+                                    )
+                                }
                             ),
                             profilePictureUrl = member.profileUrl,
                             name = member.username,
-                            isAdmin = member.userId == currentUserId
+                            // verify whether member in the list is admin to show admin label
+                            isAdmin = member.userId == group.adminId
                         )
                         Spacer(modifier = Modifier.padding(4.dp))
                     }
@@ -298,13 +311,15 @@ fun GroupOverviewScreen(
         }
 
         if(showRemoveMemberDialog){
-            selectedUserToRemove?.let {
+            selectedUserToRemove?.let { user ->
                 ActionDialog(
-                    title = it.username,
+                    title = user.username,
                     text = stringResource(id = R.string.remove_the_member_dialog_text),
                     onDismissRequest = { showRemoveMemberDialog = false },
                     onOkClick = {
-
+                        chatViewModel?.removeUserFromGroup(user.userId!!, group.groupId!!)
+                        selectedUserToRemove = null
+                        showRemoveMemberDialog = false
                     },
                     onCancelClick = { showRemoveMemberDialog = false }
                 )
