@@ -72,12 +72,12 @@ fun GroupsScreen(
                             Toast.makeText(context, "Error on creating group ", Toast.LENGTH_SHORT).show()
                         }?.collect{ success ->
                             if(success == true){
+                                newGroupName = ""
                                 Toast.makeText(context, "Group created", Toast.LENGTH_SHORT).show()
                                 chatViewModel.getUserGroupsWithLastMessage()
                             }
                         }
                     }
-
                     showCreateGroupDialog = false
                 }
             )
