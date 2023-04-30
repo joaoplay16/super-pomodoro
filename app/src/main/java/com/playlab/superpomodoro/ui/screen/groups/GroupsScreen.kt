@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,7 +43,7 @@ fun GroupsScreen(
 
         val floatActionButton = createRef()
 
-        val groups = chatViewModel?.userGroupsWithLastMessage
+        val groups = chatViewModel?.getUserGroupsWithLastMessage()?.collectAsState(null)?.value
 
         val currentUser = chatViewModel?.currentUser?.value
 
@@ -54,10 +54,6 @@ fun GroupsScreen(
         val coroutineScope = rememberCoroutineScope()
 
         val context = LocalContext.current
-
-        LaunchedEffect(key1 = Unit, block = {
-            chatViewModel?.getUserGroupsWithLastMessage()
-        })
 
         if(showCreateGroupDialog){
             CreateGroupDialog(
@@ -74,7 +70,6 @@ fun GroupsScreen(
                             if(success == true){
                                 newGroupName = ""
                                 Toast.makeText(context, "Group created", Toast.LENGTH_SHORT).show()
-                                chatViewModel.getUserGroupsWithLastMessage()
                             }
                         }
                     }
