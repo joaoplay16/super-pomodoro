@@ -282,8 +282,6 @@ fun GroupOverviewScreen(
                                         if(isCurrentUserAdmin){
                                             selectedUserToRemove = member
                                             showRemoveMemberDialog = true
-                                        }else{
-                                            Modifier
                                         }
                                     },
                                     onClick ={}
