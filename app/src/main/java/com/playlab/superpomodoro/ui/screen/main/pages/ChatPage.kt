@@ -19,7 +19,7 @@ import com.playlab.superpomodoro.ui.theme.SuperPomodoroTheme
 @Composable
 fun ChatPage(
     modifier: Modifier = Modifier,
-    chatViewModel: ChatViewModel? = hiltViewModel(),
+    chatViewModel: ChatViewModel?,
     onSignUpClick: () -> Unit,
     onGroupSelected: (Group) -> Unit
 ) {
@@ -54,7 +54,7 @@ fun ChatPage(
 fun ChatPagePreview() {
     SuperPomodoroTheme(false) {
         Surface {
-            ChatPage(onSignUpClick = {}, onGroupSelected = {})
+            ChatPage(onSignUpClick = {}, onGroupSelected = {}, chatViewModel = null)
         }
     }
 }

@@ -17,11 +17,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.playlab.superpomodoro.model.Game
 import com.playlab.superpomodoro.model.Group
+import com.playlab.superpomodoro.ui.screen.ChatViewModel
 import com.playlab.superpomodoro.ui.screen.PomodoroViewModel
 import com.playlab.superpomodoro.ui.screen.ScreenRoutes
-import com.playlab.superpomodoro.ui.screen.groupoverview.GroupOverviewScreen
 import com.playlab.superpomodoro.ui.screen.conversation.ConversationScreen
 import com.playlab.superpomodoro.ui.screen.gameview.GameView
+import com.playlab.superpomodoro.ui.screen.groupoverview.GroupOverviewScreen
 import com.playlab.superpomodoro.ui.screen.main.MainScreen
 import com.playlab.superpomodoro.ui.screen.settings.SettingsScreen
 import com.playlab.superpomodoro.ui.screen.signup.SignupScreen
@@ -34,6 +35,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val pomodoroViewModel: PomodoroViewModel by viewModels()
+    private val chatViewModel: ChatViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,7 +48,8 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.surface
                 ) {
                     DefaultNavHost(
-                        pomodoroViewModel = pomodoroViewModel
+                        pomodoroViewModel = pomodoroViewModel,
+                        chatViewModel = chatViewModel
                     )
                 }
             }
@@ -96,7 +99,8 @@ fun DefaultNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
     startDestination: String = ScreenRoutes.Main.name,
-    pomodoroViewModel: PomodoroViewModel?
+    pomodoroViewModel: PomodoroViewModel?,
+    chatViewModel: ChatViewModel?
 ) {
 
     NavHost(
@@ -120,7 +124,8 @@ fun DefaultNavHost(
                     navController.currentBackStackEntry?.savedStateHandle?.set("group", it)
                     navController.navigate(ScreenRoutes.Conversation.name)
                 },
-                pomodoroViewModel = pomodoroViewModel
+                pomodoroViewModel = pomodoroViewModel,
+                chatViewModel = chatViewModel
             )
         }
 
@@ -188,6 +193,7 @@ fun DefaultNavHost(
             group?.let {
                 GroupOverviewScreen(
                     group = group,
+                    chatViewModel = chatViewModel,
                     onArrowBackPressed = {
                         navController.popBackStack()
                     },

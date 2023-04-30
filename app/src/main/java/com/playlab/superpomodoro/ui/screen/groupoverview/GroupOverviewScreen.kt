@@ -74,7 +74,7 @@ fun GroupOverviewScreen(
     group: Group,
     onArrowBackPressed: ()  -> Unit,
     onDeleteGroup: ()  -> Unit,
-    chatViewModel: ChatViewModel? = hiltViewModel()
+    chatViewModel: ChatViewModel?
 ) {
     val context = LocalContext.current
     var isOptionMenuOpen by remember { mutableStateOf(false) }

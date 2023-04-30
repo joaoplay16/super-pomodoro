@@ -10,6 +10,7 @@ import com.playlab.superpomodoro.model.Game
 import com.playlab.superpomodoro.model.Group
 import com.playlab.superpomodoro.ui.components.HomeTabBar
 import com.playlab.superpomodoro.ui.components.TabPage
+import com.playlab.superpomodoro.ui.screen.ChatViewModel
 import com.playlab.superpomodoro.ui.screen.PomodoroViewModel
 import com.playlab.superpomodoro.ui.screen.main.pages.ChatPage
 import com.playlab.superpomodoro.ui.screen.main.pages.GamesPage
@@ -22,6 +23,7 @@ fun MainScreen(
     onSettingsClick: () -> Unit,
     onGameSelected: (Game) -> Unit,
     pomodoroViewModel: PomodoroViewModel?,
+    chatViewModel: ChatViewModel?,
     onSignUpClick: () -> Unit,
     onGroupSelected: (Group) -> Unit
 ) {
@@ -40,7 +42,8 @@ fun MainScreen(
             )
             TabPage.Chat -> ChatPage(
                 onSignUpClick = onSignUpClick,
-                onGroupSelected = onGroupSelected
+                onGroupSelected = onGroupSelected,
+                chatViewModel = chatViewModel
             )
             else -> GamesPage(onGameSelected = onGameSelected)
         }
@@ -56,6 +59,7 @@ fun PreviewMainScreen() {
                 onSettingsClick = {},
                 onGameSelected = {},
                 pomodoroViewModel = null,
+                chatViewModel  = null,
                 onGroupSelected = {},
                 onSignUpClick = {}
             )
