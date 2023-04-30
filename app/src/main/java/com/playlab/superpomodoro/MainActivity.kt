@@ -157,7 +157,8 @@ fun DefaultNavHost(
                 },
                 onSignUpSuccess = {
                     navController.popBackStack()
-                }
+                },
+                chatViewModel = chatViewModel
             )
         }
 
@@ -179,7 +180,8 @@ fun DefaultNavHost(
                     },
                     onLeaveGroup = {
                         navController.popBackStack()
-                    }
+                    },
+                    chatViewModel = chatViewModel
                 )
             }
         }

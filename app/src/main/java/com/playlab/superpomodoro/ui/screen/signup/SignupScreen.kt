@@ -37,7 +37,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.playlab.superpomodoro.R
@@ -54,7 +53,7 @@ import com.playlab.superpomodoro.util.Constants.MIN_USERNAME_LENGTH
 @Composable
 fun SignupScreen(
     modifier: Modifier = Modifier,
-    chatViewModel: ChatViewModel? = hiltViewModel(),
+    chatViewModel: ChatViewModel?,
     onArrowBackPressed: () -> Unit,
     onSignUpSuccess: () -> Unit
 ) {

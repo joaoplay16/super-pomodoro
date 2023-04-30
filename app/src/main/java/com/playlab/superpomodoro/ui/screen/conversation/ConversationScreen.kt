@@ -36,7 +36,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.playlab.superpomodoro.R
 import com.playlab.superpomodoro.model.Group
 import com.playlab.superpomodoro.model.Message
@@ -56,7 +55,7 @@ import kotlin.math.max
 @Composable
 fun ConversationScreen(
     modifier: Modifier = Modifier,
-    chatViewModel: ChatViewModel? = hiltViewModel(),
+    chatViewModel: ChatViewModel?,
     onArrowBackPressed: ()  -> Unit,
     group: Group,
     onGroupNameClick: () -> Unit,
