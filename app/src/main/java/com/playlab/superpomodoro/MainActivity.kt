@@ -167,6 +167,13 @@ fun DefaultNavHost(
                     groupName = group.name,
                     onArrowBackPressed = {
                         navController.popBackStack()
+                    },
+                    onGroupNameClick = {
+                        navController.currentBackStackEntry?.savedStateHandle?.set("group", it)
+                        navController.navigate(ScreenRoutes.GroupOverView.name)
+                    },
+                    onLeaveGroup = {
+                        navController.popBackStack()
                     }
                 )
             }
