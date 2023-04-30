@@ -356,4 +356,51 @@ class FirebaseRepository
             Log.e(TAG, "Error removing member messages from group ${e}")
         }
     }
+
+    suspend fun deleteGroup(groupId: String) {
+        try {
+            removeAllGroupMessages(groupId)
+            removeAllGroupMembers(groupId)
+            firebaseFirestore.collection(GROUPS_COLLECTION)
+                .document( groupId )
+                .delete().await()
+        }catch (e: Exception) {
+            Log.e(TAG, "Error deleting group ${e}")
+        }
+    }
+
+    private suspend fun removeAllGroupMessages(groupId: String) {
+        try {
+            firebaseFirestore.collection(MESSAGES_COLLECTION)
+                .whereEqualTo("groupId", groupId)
+                .get()
+                .await().documents.forEach{
+                    val message = it.toMessage()
+                    Log.d(TAG, "deleting message ${message?.messageId} ")
+
+                    val docRef = firebaseFirestore.collection(MESSAGES_COLLECTION)
+                        .document(message?.messageId!!)
+                    docRef.delete().await()
+                }
+        }catch (e: Exception) {
+            Log.e(TAG, "Error removing member all group messages ${e}")
+        }
+    }
+
+    private suspend fun removeAllGroupMembers(groupId: String) {
+        try {
+            firebaseFirestore.collection(GROUP_MEMBERS_COLLECTION)
+                .whereEqualTo("groupId", groupId)
+                .get()
+                .await().documents.forEach{
+                    val groupMember = it.toGroupMember()
+                    val docRef = firebaseFirestore.collection(GROUP_MEMBERS_COLLECTION)
+                        .document(groupMember?.id!!)
+
+                    docRef.delete().await()
+                }
+        }catch (e: Exception) {
+            Log.e(TAG, "Error removing all member from the group ${e}")
+        }
+    }
 }
