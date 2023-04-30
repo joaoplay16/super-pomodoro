@@ -119,4 +119,10 @@ class ChatViewModel
             firebaseRepository.removeUserFromGroup(userId, groupId)
         }
     }
+
+    fun deleteGroup(groupId: String){
+        viewModelScope.launch {
+            firebaseRepository.deleteGroup(groupId)
+        }
+    }
 }
