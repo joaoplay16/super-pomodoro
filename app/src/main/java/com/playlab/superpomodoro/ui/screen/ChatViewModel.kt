@@ -11,7 +11,6 @@ import com.playlab.superpomodoro.repository.FirebaseRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -112,6 +111,12 @@ class ChatViewModel
             firebaseRepository.getGroupMessages(groupId).collect{ map ->
                 _groupMessages.putAll(map)
             }
+        }
+    }
+
+    fun removeUserFromGroup(userId: String, groupId: String){
+        viewModelScope.launch {
+            firebaseRepository.removeUserFromGroup(userId, groupId)
         }
     }
 }
