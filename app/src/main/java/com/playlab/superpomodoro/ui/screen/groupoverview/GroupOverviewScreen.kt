@@ -73,6 +73,7 @@ fun GroupOverviewScreen(
     modifier: Modifier = Modifier,
     group: Group,
     onArrowBackPressed: ()  -> Unit,
+    onDeleteGroup: ()  -> Unit,
     chatViewModel: ChatViewModel? = hiltViewModel()
 ) {
     val context = LocalContext.current
@@ -320,6 +321,7 @@ fun GroupOverviewScreen(
                 onOkClick = {
                     chatViewModel?.deleteGroup(groupId = group.groupId!!)
                     showDeleteGroupDialog = false
+                    onDeleteGroup()
                 },
                 onCancelClick = { showDeleteGroupDialog = false }
             )
@@ -341,6 +343,7 @@ fun AddGroupMemberScreenPreview() {
             GroupOverviewScreen(
                 group = group,
                 onArrowBackPressed = {},
+                onDeleteGroup = {},
                 chatViewModel = null,
             )
         }
