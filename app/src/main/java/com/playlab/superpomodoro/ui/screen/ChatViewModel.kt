@@ -57,8 +57,16 @@ class ChatViewModel
 
     fun logout(){
         firebaseRepository.logout()
+        reset()
+    }
+
+    private fun reset(){
         _currentUser.value = null
         _isLoggedIn.value = false
+        _signUpError.value = null
+        _loginUpError.value = null
+        _userGroupsWithLastMessage.clear()
+        _groupMessages.clear()
     }
 
     fun createUser(user: User, password: String) {
