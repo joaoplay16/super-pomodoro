@@ -132,7 +132,6 @@ class ChatViewModel
         viewModelScope.launch {
             firebaseRepository.deleteGroup(group.groupId!!)
             _userGroupsWithLastMessage.remove(group)
-            getUserGroupsWithLastMessage()
         }
     }
 }
