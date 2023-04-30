@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.playlab.superpomodoro.R
+import com.playlab.superpomodoro.model.Group
 import com.playlab.superpomodoro.model.Message
 import com.playlab.superpomodoro.ui.components.ActionDialog
 import com.playlab.superpomodoro.ui.components.MessageInput
@@ -57,15 +58,14 @@ fun ConversationScreen(
     modifier: Modifier = Modifier,
     chatViewModel: ChatViewModel? = hiltViewModel(),
     onArrowBackPressed: ()  -> Unit,
-    groupId: String,
-    groupName: String,
+    group: Group,
     onGroupNameClick: () -> Unit,
     onLeaveGroup: () -> Unit,
 ) {
     var showActionDialog by remember{ mutableStateOf(false) }
     var isOptionMenuOpen by remember { mutableStateOf(false) }
     val currentUserId = chatViewModel?.currentUser?.value?.userId
-    val isAdmin = currentUserId == groupId
+    val isAdmin = currentUserId == group.adminId
     Scaffold(
         topBar = {
             Row(
@@ -89,12 +89,12 @@ fun ConversationScreen(
                     )
                     TextLabel(
                         modifier = Modifier.clickable { onGroupNameClick() },
-                        text = groupName,
+                        text = group.name,
                         textStyle = MaterialTheme.typography.subtitle2,
                         fontSize = dimensionResource(id = R.dimen.screen_title_font_size).value.sp
                     )
                 }
-                if(isAdmin) {
+                if(isAdmin.not()) {
                     Box(
                         modifier = Modifier
                             .clickable(onClick = { isOptionMenuOpen = true })
@@ -146,7 +146,7 @@ fun ConversationScreen(
         })
 
         LaunchedEffect(key1 = Unit, block = {
-            chatViewModel?.getGroupMessages(groupId)
+            chatViewModel?.getGroupMessages(group.groupId!!)
         })
 
         LaunchedEffect(key1 = messages, block = {
@@ -207,7 +207,7 @@ fun ConversationScreen(
                                 val sent = chatViewModel.sendMessageToGroup(
                                     Message(
                                         messageId = "",
-                                        groupId = groupId,
+                                        groupId = group.groupId!!,
                                         senderId = currentUserId,
                                         text = messageText,
                                         timestamp = System.currentTimeMillis()
@@ -224,12 +224,12 @@ fun ConversationScreen(
         if(showActionDialog){
             isOptionMenuOpen = false
             ActionDialog(
-                title = groupName,
+                title = group.name,
                 text = stringResource(id = R.string.leave_the_group_dialog_text),
                 onDismissRequest = { showActionDialog = false },
                 onOkClick = {
                     if (currentUserId != null) {
-                        chatViewModel.removeUserFromGroup(currentUserId, groupId)
+                        chatViewModel.removeUserFromGroup(currentUserId, group.groupId!!)
                     }
                     onLeaveGroup()
                 },
@@ -247,8 +247,7 @@ fun SettingsScreenPreview() {
             ConversationScreen(
                 onArrowBackPressed = {},
                 chatViewModel = null,
-                groupId = "",
-                groupName = "Study group",
+                group = Group("", "", "StudyGroup", ""),
                 onGroupNameClick = {},
                 onLeaveGroup = {}
             )

@@ -169,8 +169,7 @@ fun DefaultNavHost(
 
             group?.let {
                 ConversationScreen(
-                    groupId = group.groupId!! ,
-                    groupName = group.name,
+                    group = group,
                     onArrowBackPressed = {
                         navController.popBackStack()
                     },
