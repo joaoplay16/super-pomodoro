@@ -167,7 +167,12 @@ fun SignupScreen(
                 errorMessage = context.getString(
                     R.string.invalid_username_length_error, MIN_USERNAME_LENGTH
                 ),
-                onTextChange = { if(it.length < MAX_USERNAME_LENGTH) username = it },
+                onTextChange = {
+                    if(it.length < MAX_USERNAME_LENGTH)
+                        username = it
+                            .replace("[^a-zA-Z0-9_]".toRegex(), "")
+                            .lowercase()
+                },
                 leadingIcon = Icons.Default.Person,
                 placeholder = stringResource(id = R.string.input_username),
                 keyboardOptions = KeyboardOptions(
