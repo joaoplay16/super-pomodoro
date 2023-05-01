@@ -8,6 +8,7 @@ import androidx.datastore.preferences.preferencesDataStoreFile
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import com.playlab.superpomodoro.data.preferences.PreferencesDataStore
 import com.playlab.superpomodoro.repository.DefaultPreferencesRepository
 import com.playlab.superpomodoro.repository.PreferencesRepository
@@ -56,4 +57,8 @@ object DatabaseModule {
     fun provideFirebaseFirestoreInstance() : FirebaseFirestore =
         FirebaseFirestore.getInstance()
 
+    @Provides
+    @Singleton
+    fun provideFirebaseStorageInstance() : FirebaseStorage =
+        FirebaseStorage.getInstance()
 }
