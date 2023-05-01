@@ -155,7 +155,9 @@ fun GroupOverviewScreen(
                     )
                     Spacer(Modifier.padding(8.dp))
                     TextLabel(
+                        modifier.weight(1f),
                         text = group.name,
+                        maxLines = 3,
                         textStyle = MaterialTheme.typography.subtitle2,
                         fontSize = dimensionResource(id = R.dimen.screen_title_font_size).value.sp
                     )
