@@ -21,9 +21,11 @@ import com.playlab.superpomodoro.model.User.Companion.toUser
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.util.UUID
@@ -354,15 +356,22 @@ class FirebaseRepository
         }
     }
 
-    suspend fun deleteGroup(groupId: String) {
+    suspend fun deleteGroup(groupId: String): Any = coroutineScope{
         try {
-            removeAllGroupMessages(groupId)
-            removeAllGroupMembers(groupId)
+            val removeMessagesJob = launch {
+                removeAllGroupMessages(groupId)
+            }
+            val removeMembersJob = launch {
+                removeAllGroupMembers(groupId)
+            }
+
+            joinAll(removeMessagesJob, removeMembersJob)
+
             firebaseFirestore.collection(GROUPS_COLLECTION)
                 .document( groupId )
                 .delete().await()
         }catch (e: Exception) {
-            Log.e(TAG, "Error deleting group ${e}")
+            Log.e(TAG, "Error deleting group $e")
         }
     }
 
@@ -384,7 +393,7 @@ class FirebaseRepository
         }
     }
 
-    private suspend fun removeAllGroupMembers(groupId: String) {
+    private suspend fun removeAllGroupMembers(groupId: String) = coroutineScope {
         try {
             firebaseFirestore.collection(GROUP_MEMBERS_COLLECTION)
                 .whereEqualTo("groupId", groupId)
