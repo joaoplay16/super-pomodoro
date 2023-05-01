@@ -1,10 +1,13 @@
 package com.playlab.superpomodoro.repository
 
+import android.net.Uri
 import android.util.Log
+import androidx.core.net.toUri
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.google.firebase.storage.FirebaseStorage
 import com.playlab.superpomodoro.exception.UserAlreadyInTheGroupException
 import com.playlab.superpomodoro.exception.UserNotFoundException
 import com.playlab.superpomodoro.model.Group
@@ -23,12 +26,14 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import java.util.UUID
 import javax.inject.Inject
 
 class FirebaseRepository
 @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
-    private val firebaseFirestore: FirebaseFirestore
+    private val firebaseFirestore: FirebaseFirestore,
+    private val firebaseStorage: FirebaseStorage
 ) {
 
     companion object {
@@ -38,6 +43,7 @@ class FirebaseRepository
         private const val GROUPS_COLLECTION = "groups"
         private const val GROUP_MEMBERS_COLLECTION = "group_members"
         private const val MESSAGES_COLLECTION = "messages"
+        private const val GROUP_IMAGES = "/images/groups"
     }
 
     fun login(email: String, password: String) : Flow<Boolean?> {
@@ -113,12 +119,15 @@ class FirebaseRepository
                     .add(group)
                     .addOnSuccessListener {documentRef ->
                         trySend(true)
-                        val groupCopy = group.copy(
-                            groupId = documentRef.id,
-                            adminId = currentUser.userId!!
-                        )
-                        documentRef.set(groupCopy)
                         launch {
+                            val groupCopy = group.copy(
+                                groupId = documentRef.id,
+                                adminId = currentUser.userId!!,
+                                thumbnailUrl = group.thumbnailUrl?.let {
+                                    uploadGroupThumbnail(it.toUri())
+                                }?.toString()
+                            )
+                            documentRef.set(groupCopy)
                             addMemberToGroup(currentUser.email, groupCopy.groupId!!).first()
                         }
                     }.addOnFailureListener{
@@ -389,6 +398,18 @@ class FirebaseRepository
                 }
         }catch (e: Exception) {
             Log.e(TAG, "Error removing all member from the group ${e}")
+        }
+    }
+
+    private suspend fun uploadGroupThumbnail(thumbnailUri: Uri): Uri {
+        return try {
+            val filename = UUID.randomUUID().toString()
+            val ref = firebaseStorage.getReference("$GROUP_IMAGES/$filename")
+            val taskSnapShot = ref.putFile(thumbnailUri).await()
+            return taskSnapShot.task.snapshot.storage.downloadUrl.await()
+        }catch (e: Exception){
+            Log.e(TAG, "Error uploading group thumbnail ${e}")
+            Uri.EMPTY
         }
     }
 }
