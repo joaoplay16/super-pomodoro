@@ -125,7 +125,7 @@ class ChatViewModel
 
     fun deleteGroup(group: Group){
         viewModelScope.launch {
-            firebaseRepository.deleteGroup(group.groupId!!)
+            firebaseRepository.deleteGroup(group)
         }
     }
 }

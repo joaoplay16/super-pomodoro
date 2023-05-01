@@ -356,8 +356,10 @@ class FirebaseRepository
         }
     }
 
-    suspend fun deleteGroup(groupId: String): Any = coroutineScope{
+    suspend fun deleteGroup(group: Group): Any = coroutineScope{
         try {
+            val groupId = group.groupId!!
+
             val removeMessagesJob = launch {
                 removeAllGroupMessages(groupId)
             }
