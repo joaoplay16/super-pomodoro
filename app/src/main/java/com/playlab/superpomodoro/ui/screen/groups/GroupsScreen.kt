@@ -27,6 +27,7 @@ import com.playlab.superpomodoro.ui.components.GroupItem
 import com.playlab.superpomodoro.ui.screen.ChatViewModel
 import com.playlab.superpomodoro.ui.screen.DevicesPreviews
 import com.playlab.superpomodoro.ui.theme.SuperPomodoroTheme
+import com.playlab.superpomodoro.util.Constants.MAX_GROUP_NAME_LENGTH
 import com.playlab.superpomodoro.util.TimeUtil.toFormattedTimeString
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
@@ -59,7 +60,7 @@ fun GroupsScreen(
             CreateGroupDialog(
                 onDismissRequest = { showCreateGroupDialog = false },
                 groupName = newGroupName,
-                onGroupNameChange = { newGroupName = it },
+                onGroupNameChange = { if(it.length < MAX_GROUP_NAME_LENGTH) newGroupName = it },
                 onButtonCreateClick = {
                     coroutineScope.launch {
                         chatViewModel?.createGroup(
