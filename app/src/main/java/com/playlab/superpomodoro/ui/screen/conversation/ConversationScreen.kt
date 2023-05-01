@@ -1,6 +1,8 @@
 package com.playlab.superpomodoro.ui.screen.conversation
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -52,6 +54,7 @@ import com.playlab.superpomodoro.util.TimeUtil.toFormattedTimeString
 import kotlinx.coroutines.launch
 import kotlin.math.max
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ConversationScreen(
     modifier: Modifier = Modifier,
@@ -87,7 +90,7 @@ fun ConversationScreen(
                         contentDescription = stringResource(id = R.string.arrow_back_icon_content_description)
                     )
                     TextLabel(
-                        modifier = Modifier.clickable { onGroupNameClick() },
+                        modifier = Modifier.clickable { onGroupNameClick() }.basicMarquee(),
                         text = group.name,
                         textStyle = MaterialTheme.typography.subtitle2,
                         fontSize = dimensionResource(id = R.dimen.screen_title_font_size).value.sp
