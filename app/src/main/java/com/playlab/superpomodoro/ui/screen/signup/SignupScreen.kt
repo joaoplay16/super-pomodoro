@@ -47,6 +47,7 @@ import com.playlab.superpomodoro.ui.screen.ChatViewModel
 import com.playlab.superpomodoro.ui.screen.DevicesPreviews
 import com.playlab.superpomodoro.ui.theme.SuperPomodoroTheme
 import com.playlab.superpomodoro.ui.validators.InputValidator
+import com.playlab.superpomodoro.util.Constants.MAX_USERNAME_LENGTH
 import com.playlab.superpomodoro.util.Constants.MIN_PASSWORD_LENGTH
 import com.playlab.superpomodoro.util.Constants.MIN_USERNAME_LENGTH
 
@@ -166,7 +167,7 @@ fun SignupScreen(
                 errorMessage = context.getString(
                     R.string.invalid_username_length_error, MIN_USERNAME_LENGTH
                 ),
-                onTextChange = { username = it },
+                onTextChange = { if(it.length < MAX_USERNAME_LENGTH) username = it },
                 leadingIcon = Icons.Default.Person,
                 placeholder = stringResource(id = R.string.input_username),
                 keyboardOptions = KeyboardOptions(
