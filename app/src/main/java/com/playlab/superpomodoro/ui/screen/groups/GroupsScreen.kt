@@ -1,6 +1,10 @@
 package com.playlab.superpomodoro.ui.screen.groups
 
+import android.net.Uri
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -52,14 +56,29 @@ fun GroupsScreen(
 
         var newGroupName by remember { mutableStateOf("") }
 
+        var newGroupThumbnail by remember { mutableStateOf<Uri?>(Uri.EMPTY) }
+
         val coroutineScope = rememberCoroutineScope()
 
         val context = LocalContext.current
+
+        val launcherImage = rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.PickVisualMedia(),
+            onResult = {
+                newGroupThumbnail = it
+            }
+        )
 
         if(showCreateGroupDialog){
             CreateGroupDialog(
                 onDismissRequest = { showCreateGroupDialog = false },
                 groupName = newGroupName,
+                groupThumbnail = newGroupThumbnail.toString(),
+                onThumbnailClick = {
+                    launcherImage.launch(
+                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                    )
+                },
                 onGroupNameChange = { if(it.length < MAX_GROUP_NAME_LENGTH) newGroupName = it },
                 onButtonCreateClick = {
                     coroutineScope.launch {
