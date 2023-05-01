@@ -32,6 +32,7 @@ import com.playlab.superpomodoro.ui.screen.ChatViewModel
 import com.playlab.superpomodoro.ui.screen.DevicesPreviews
 import com.playlab.superpomodoro.ui.theme.SuperPomodoroTheme
 import com.playlab.superpomodoro.util.Constants.MAX_GROUP_NAME_LENGTH
+import com.playlab.superpomodoro.util.ImageCompressor.compressImage
 import com.playlab.superpomodoro.util.TimeUtil.toFormattedTimeString
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
@@ -65,7 +66,11 @@ fun GroupsScreen(
         val launcherImage = rememberLauncherForActivityResult(
             contract = ActivityResultContracts.PickVisualMedia(),
             onResult = {
-                newGroupThumbnail = it
+                it?.let{
+                    coroutineScope.launch {
+                        newGroupThumbnail = compressImage(context, it)
+                    }
+                }
             }
         )
 
@@ -83,12 +88,13 @@ fun GroupsScreen(
                 onButtonCreateClick = {
                     coroutineScope.launch {
                         chatViewModel?.createGroup(
-                            Group(null, "", newGroupName, null)
+                            Group(null, "", newGroupName, newGroupThumbnail.toString())
                         )?.catch{
                             Toast.makeText(context, "Error on creating group ", Toast.LENGTH_SHORT).show()
                         }?.collect{ success ->
                             if(success == true){
                                 newGroupName = ""
+                                newGroupThumbnail = Uri.EMPTY
                                 Toast.makeText(context, "Group created", Toast.LENGTH_SHORT).show()
                             }
                         }
