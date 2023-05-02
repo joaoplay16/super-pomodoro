@@ -1,6 +1,8 @@
 package com.playlab.superpomodoro.ui.screen.main.pages
 
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -21,9 +24,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.playlab.superpomodoro.R
 import com.playlab.superpomodoro.ui.animation.RemainingTimeAnimation
 import com.playlab.superpomodoro.ui.components.PauseButton
@@ -72,9 +75,11 @@ fun HomePage(
     }
 
     Column(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize().scrollable(
+            rememberScrollState(), Orientation.Vertical
+        ),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
+        verticalArrangement = Arrangement.Top,
     ) {
         Row(modifier = Modifier
             .fillMaxWidth()
@@ -96,13 +101,14 @@ fun HomePage(
         }
 
         RemainingTimeAnimation(
-            canvasSize = 250.dp,
+            canvasSize = dimensionResource(id = R.dimen.remaining_time_animation_size),
             value = timeLeft?.toInt() ?: 0,
             maxValue = currentTimerValue.toInt()
         )
 
         Spacer(Modifier.padding(8.dp))
-        PomodoroDone(done = pomodoroCount ?: 0)
+        PomodoroDone(
+            done = pomodoroCount ?: 0)
         Spacer(Modifier.padding(12.dp))
 
         Row {
@@ -126,7 +132,7 @@ fun HomePage(
             }
 
         }
-        Spacer(Modifier.padding(18.dp))
+        Spacer(Modifier.padding(12.dp))
 
         val status = when(timerStatus){
             TimerStatus.LONG_BREAK -> stringResource(id = R.string.pomodoro_Long_break)
@@ -151,11 +157,9 @@ fun HomePage(
 fun HomePagePreview() {
     SuperPomodoroTheme(false) {
         Surface {
-            val pomodoroViewModel: PomodoroViewModel = viewModel()
-
             HomePage(
                 onSettingsClick = {},
-                pomodoroViewModel = pomodoroViewModel
+                pomodoroViewModel = null
             )
         }
     }

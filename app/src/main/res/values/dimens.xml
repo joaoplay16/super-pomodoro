@@ -13,4 +13,7 @@
     <dimen name="input_time_label_font_size">12sp</dimen>
     <dimen name="time_selector_font_size">96sp</dimen>
 
+    <dimen name="remaining_time_animation_size">250dp</dimen>
+    <dimen name="pomodoro_done_dot_size">16dp</dimen>
+    <dimen name="pomodoro_done_dot_spacing">12dp</dimen>
 </resources>
