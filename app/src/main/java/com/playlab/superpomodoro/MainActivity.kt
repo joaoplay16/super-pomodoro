@@ -15,6 +15,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.google.android.gms.ads.MobileAds
 import com.playlab.superpomodoro.model.Game
 import com.playlab.superpomodoro.model.Group
 import com.playlab.superpomodoro.ui.screen.ChatViewModel
@@ -91,6 +92,8 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+
+        MobileAds.initialize(this)
     }
 }
 
