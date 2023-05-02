@@ -1,8 +1,6 @@
 package com.playlab.superpomodoro.ui.screen.main.pages
 
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -27,8 +26,10 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.google.android.gms.ads.AdSize
 import com.playlab.superpomodoro.R
 import com.playlab.superpomodoro.ui.animation.RemainingTimeAnimation
+import com.playlab.superpomodoro.ui.components.AdvertView
 import com.playlab.superpomodoro.ui.components.PauseButton
 import com.playlab.superpomodoro.ui.components.PomodoroDone
 import com.playlab.superpomodoro.ui.components.ResumeButton
@@ -73,26 +74,34 @@ fun HomePage(
         TimerStatus.LONG_BREAK -> longBreakDuration
         else -> 0
     }
-
     Column(
-        modifier = modifier.fillMaxSize().scrollable(
-            rememberScrollState(), Orientation.Vertical
-        ),
+        modifier = modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+    Column(
+        modifier = modifier
+            .weight(1f)
+            .verticalScroll(
+                rememberScrollState()
+            ),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top,
     ) {
-        Row(modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 10.dp), Arrangement.End){
+        Row(
+            modifier = Modifier
+            .fillMaxWidth(),
+            horizontalArrangement = Arrangement.End
+        ){
             val iconAlpha by animateFloatAsState(
-                targetValue = if (isRunning == true) 0f else 1f
+                targetValue = if (isRunning == true) 0f else 1f,
+                label = "settingsIconAnim"
             )
             IconButton(
                 modifier = Modifier.alpha( iconAlpha ),
                 onClick = { if(isRunning == false) onSettingsClick() }
             ) {
                 Icon(
-                    modifier = Modifier.padding(16.dp),
+                    modifier = Modifier,
                     imageVector = Icons.Rounded.Settings,
                     contentDescription = "",
                     tint = Purple400
@@ -102,7 +111,7 @@ fun HomePage(
 
         RemainingTimeAnimation(
             canvasSize = dimensionResource(id = R.dimen.remaining_time_animation_size),
-            value = timeLeft?.toInt() ?: 0,
+            value = timeLeft?.toInt() ?: 100,
             maxValue = currentTimerValue.toInt()
         )
 
@@ -148,6 +157,8 @@ fun HomePage(
         Spacer(Modifier.padding(8.dp))
 
         TimeText(text = TimeUtil.getFormattedTimeString(timeLeft ?: 0))
+    }
+        AdvertView(adSize = AdSize.BANNER)
     }
 }
 
