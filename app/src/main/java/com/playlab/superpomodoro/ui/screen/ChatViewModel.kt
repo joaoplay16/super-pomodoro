@@ -23,7 +23,7 @@ class ChatViewModel
     private var _currentUser = mutableStateOf<User?>(null)
     val currentUser = _currentUser
 
-    private var _isLoggedIn = mutableStateOf( _currentUser.value != null)
+    private var _isLoggedIn = mutableStateOf<Boolean?>( null)
     val isLoggedIn = _isLoggedIn
 
     private var _signUpError = mutableStateOf<Throwable?>(null)
@@ -59,7 +59,7 @@ class ChatViewModel
 
     private fun reset(){
         _currentUser.value = null
-        _isLoggedIn.value = false
+        _isLoggedIn.value = null
         _signUpError.value = null
         _loginUpError.value = null
         _groupMessages.clear()
@@ -73,6 +73,7 @@ class ChatViewModel
                     _signUpError.value = it.cause
                 }
                 .collect{
+                    _isLoggedIn.value = it != null
                     _currentUser.value = it
                 }
         }

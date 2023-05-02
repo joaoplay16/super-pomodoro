@@ -156,7 +156,10 @@ fun DefaultNavHost(
                     navController.popBackStack()
                 },
                 onSignUpSuccess = {
-                    navController.popBackStack()
+                    navController.popBackStack(
+                        route = ScreenRoutes.Main.name,
+                        inclusive = false
+                    )
                 },
                 chatViewModel = chatViewModel
             )

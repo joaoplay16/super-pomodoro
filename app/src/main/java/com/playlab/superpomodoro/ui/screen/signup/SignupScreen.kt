@@ -129,6 +129,10 @@ fun SignupScreen(
             repeatPasswordMatch
         )
 
+        if(chatViewModel?.isLoggedIn?.value == true) {
+            onSignUpSuccess()
+        }
+
         Column(
             modifier = modifier.fillMaxSize()
                 .padding(paddingValues)
@@ -235,9 +239,6 @@ fun SignupScreen(
                                 email = email
                             ), password
                         )
-                        if(chatViewModel?.currentUser?.value != null) {
-                            onSignUpSuccess()
-                        }
                     }
                 }
             ) {
