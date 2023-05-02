@@ -6,4 +6,6 @@ object Constants {
     const val MAX_USERNAME_LENGTH = 20
     const val MAX_GROUP_NAME_LENGTH = 32
     const val IMAGE_COMPRESSION_QUALITY = 12
+    // Sample Ad Unit Id
+    const val AD_UNIT_ID = "ca-app-pub-3940256099942544/6300978111"
 }
