@@ -228,8 +228,6 @@ class FirebaseRepository
                 .await()
                 .documents
                 .map {
-                    Log.d(TAG,"Member ${ it.toGroupMember()}")
-
                     it.toGroupMember()
                 }.map {
                     getUserById(it!!.userId)!!
@@ -356,7 +354,7 @@ class FirebaseRepository
         }
     }
 
-    suspend fun deleteGroup(group: Group): Any = coroutineScope{
+    suspend fun deleteGroup(group: Group) = coroutineScope{
         try {
             val groupId = group.groupId!!
 
@@ -366,14 +364,21 @@ class FirebaseRepository
             val removeMembersJob = launch {
                 removeAllGroupMembers(groupId)
             }
+            val deleteThumbnailJob = launch {
+                deleteGroupThumbnail(group.thumbnailUrl!!)
+            }
 
-            joinAll(removeMessagesJob, removeMembersJob)
+            joinAll(
+                removeMessagesJob,
+                removeMembersJob,
+                deleteThumbnailJob
+            )
 
             firebaseFirestore.collection(GROUPS_COLLECTION)
                 .document( groupId )
                 .delete().await()
         }catch (e: Exception) {
-            Log.e(TAG, "Error deleting group $e")
+            Log.e(TAG, "Error deleting group ")
         }
     }
 
@@ -421,6 +426,15 @@ class FirebaseRepository
         }catch (e: Exception){
             Log.e(TAG, "Error uploading group thumbnail ${e}")
             Uri.EMPTY
+        }
+    }
+
+    private suspend fun deleteGroupThumbnail(thumbnailUrl: String) {
+        try {
+            val ref = firebaseStorage.getReferenceFromUrl(thumbnailUrl)
+            ref.delete().await()
+        }catch (e: Exception){
+            Log.e(TAG, "Error deleting group thumbnail $e")
         }
     }
 }
