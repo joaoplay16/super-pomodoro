@@ -23,8 +23,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.google.android.gms.ads.AdSize
 import com.playlab.superpomodoro.R
 import com.playlab.superpomodoro.model.Group
+import com.playlab.superpomodoro.ui.components.AdvertView
 import com.playlab.superpomodoro.ui.components.CreateGroupDialog
 import com.playlab.superpomodoro.ui.components.ExpandableFAB
 import com.playlab.superpomodoro.ui.components.GroupItem
@@ -47,7 +49,10 @@ fun GroupsScreen(
         modifier = modifier
     ) {
 
-        val floatActionButton = createRef()
+        val (
+            floatActionButtonRef,
+            adsBannerRef
+            ) = createRefs()
 
         val groups = chatViewModel?.getUserGroupsWithLastMessage()?.collectAsState(null)?.value
 
@@ -140,12 +145,20 @@ fun GroupsScreen(
         ExpandableFAB(
             modifier = Modifier
                 .padding(vertical = 24.dp, horizontal = 20.dp)
-                .constrainAs(floatActionButton) {
+                .constrainAs(floatActionButtonRef) {
                     end.linkTo(parent.end)
-                    bottom.linkTo(parent.bottom)
+                    bottom.linkTo(adsBannerRef.top)
                 },
             onLogout = { chatViewModel?.logout() },
             onAddNewGroup = { showCreateGroupDialog = true }
+        )
+        AdvertView(
+            modifier = Modifier.constrainAs(adsBannerRef){
+                 start.linkTo(parent.start)
+                 end.linkTo(parent.end)
+                 bottom.linkTo(parent.bottom)
+            },
+            adSize = AdSize.BANNER
         )
     }
 }
