@@ -144,9 +144,11 @@ fun LoginScreen(
         ) {
             Row {
                 Text(
-                    text = stringResource(id = R.string.no_account_label) +
+                    text =
+                    stringResource(id = R.string.no_account_label)
+                            + " " +
                     stringResource(id = R.string.sign_up_here_label),
-                    fontSize = 18.sp
+                    fontSize = 16.sp
                 )
             }
         }
