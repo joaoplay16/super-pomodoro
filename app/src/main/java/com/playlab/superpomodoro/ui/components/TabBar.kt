@@ -8,16 +8,34 @@ import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.material.TabPosition
+import androidx.compose.material.TabRow
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Games
 import androidx.compose.material.icons.rounded.Chat
 import androidx.compose.material.icons.rounded.Home
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
@@ -38,7 +56,8 @@ fun HomeTabBar(
     modifier: Modifier = Modifier,
     tabPage: TabPage,
     backgroundColor: Color = MaterialTheme.colors.background,
-    onTabSelected: (tabPage: TabPage) -> Unit
+    onTabSelected: (tabPage: TabPage) -> Unit,
+    disabledTabs: List<TabPage> = emptyList()
 ) {
     TabRow(
         modifier = modifier,
@@ -48,20 +67,33 @@ fun HomeTabBar(
             HomeTabIndicator(tabPositions, tabPage)
         }
     ) {
+
+        val isTabDisabled: (TabPage) -> Boolean = remember{{
+            it in disabledTabs
+        }}
+
+        val disabledModifier: (TabPage) -> Modifier = remember {{ tab ->
+            if(isTabDisabled(tab))
+                Modifier.alpha(0.5f)else Modifier
+        }}
+
         HomeTab(
+            modifier = disabledModifier(TabPage.Home),
             icon = Icons.Rounded.Home,
             title = stringResource(R.string.home_tab),
-            onClick = { onTabSelected(TabPage.Home) }
+            onClick = { if(isTabDisabled(TabPage.Home).not()) onTabSelected(TabPage.Home) }
         )
         HomeTab(
+            modifier = disabledModifier(TabPage.Chat),
             icon = Icons.Rounded.Chat,
             title = stringResource(R.string.chat_tab),
-            onClick = { onTabSelected(TabPage.Chat) }
+            onClick = { if(isTabDisabled(TabPage.Chat).not()) onTabSelected(TabPage.Chat) }
         )
         HomeTab(
+            modifier = disabledModifier(TabPage.Games),
             icon = Icons.Default.Games,
             title = stringResource(R.string.games_tab),
-            onClick = { onTabSelected(TabPage.Games) }
+            onClick = { if(isTabDisabled(TabPage.Games).not()) onTabSelected(TabPage.Games) }
         )
     }
 }
@@ -151,6 +183,23 @@ fun HomeTabPreview() {
             HomeTabBar(
                 tabPage = selectedTab,
                 onTabSelected = { selectedTab = it }
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun HomeTabPreview_TabDisabled() {
+    SuperPomodoroTheme(false) {
+        Surface {
+
+            var selectedTab by remember{ mutableStateOf(TabPage.Home) }
+
+            HomeTabBar(
+                tabPage = selectedTab,
+                onTabSelected = { selectedTab = it },
+                disabledTabs = listOf(TabPage.Chat)
             )
         }
     }
