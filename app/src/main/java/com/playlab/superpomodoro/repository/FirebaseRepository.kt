@@ -253,13 +253,13 @@ class FirebaseRepository
                     }else{
                         launch {
                             val groupMessages = querySnapshot?.documents
-                                ?.map {
+                                ?.mapNotNull {
                                     it.toGroupMember()
-                                }?.map {
-                                    async { getGroupById(it!!.groupId) }.await()!!
+                                }?.mapNotNull {
+                                    async { getGroupById(it.groupId) }.await()
                                 }?.associateWith {
                                     async {getGroupLastMessage(it.groupId!!)}.await()
-                            }.orEmpty()
+                                }.orEmpty()
                             trySend(groupMessages)
                         }
                     }
@@ -276,7 +276,7 @@ class FirebaseRepository
                 .get().await().toGroup()
         } catch (e: Exception){
             Log.e(TAG, "Error fetching group by id")
-           null
+            null
         }
     }
 
