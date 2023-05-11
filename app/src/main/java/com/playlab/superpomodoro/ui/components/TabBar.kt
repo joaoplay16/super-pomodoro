@@ -39,6 +39,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.playlab.superpomodoro.R
@@ -168,7 +169,11 @@ private fun HomeTab(
             contentDescription = null
         )
         Spacer(modifier = Modifier.width(16.dp))
-        Text(text = title, style = MaterialTheme.typography.subtitle2)
+        Text(
+            text = title,
+            style = MaterialTheme.typography.subtitle2,
+            overflow = TextOverflow.Ellipsis
+        )
     }
 }
 
