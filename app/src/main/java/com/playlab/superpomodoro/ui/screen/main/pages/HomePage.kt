@@ -94,7 +94,6 @@ fun HomePage(
         ){
             val iconAlpha by animateFloatAsState(
                 targetValue = if (isRunning == true) 0f else 1f,
-                label = "settingsIconAnim"
             )
             IconButton(
                 modifier = Modifier.alpha( iconAlpha ),
