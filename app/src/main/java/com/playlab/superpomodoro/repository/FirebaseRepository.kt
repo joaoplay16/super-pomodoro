@@ -55,8 +55,13 @@ class FirebaseRepository
             firebaseAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
                     trySend(task.isSuccessful).isSuccess
-                }.addOnFailureListener{
-                    cancel("Login error", cause = it)
+                }.addOnFailureListener{ exception ->
+                    val errorMessage = "Error on login"
+                    firebaseCrashlytics.run {
+                        log(errorMessage)
+                        recordException(exception)
+                    }
+                    cancel(errorMessage, cause = exception)
                 }
 
             awaitClose()
@@ -76,11 +81,22 @@ class FirebaseRepository
                 val userCopy = user.copy(userId = firebaseAuth.uid.toString())
                 saveUserInFirestore(userCopy).addOnSuccessListener {
                     trySend(userCopy)
-                }.addOnFailureListener{
-                    cancel("Error saving user", cause = it)
+                }.addOnFailureListener{ exception ->
+                    val errorMessage = "Error saving user"
+                    firebaseCrashlytics.run {
+                        log(errorMessage)
+                        setCustomKey("user", userCopy.toString())
+                        recordException(exception)
+                    }
+                    cancel(errorMessage, cause = exception)
                 }
-            }.addOnFailureListener{
-                cancel("Error creating user account", cause = it)
+            }.addOnFailureListener{ exception ->
+                val errorMessage = "Error creating user account"
+                firebaseCrashlytics.run {
+                    log(errorMessage)
+                    recordException(exception)
+                }
+                cancel(errorMessage, cause = exception)
             }
             awaitClose()
         }
@@ -99,8 +115,13 @@ class FirebaseRepository
                     .document(uid)
                     .addSnapshotListener { docSnapshot, exception ->
                         if (exception != null) {
+                            val errorMessage = "Error fetching user"
+                            firebaseCrashlytics.run {
+                                log(errorMessage)
+                                recordException(exception)
+                            }
                             cancel(
-                                message = "Error fetching user",
+                                message = errorMessage,
                                 cause = exception
                             )
                             return@addSnapshotListener
@@ -134,8 +155,15 @@ class FirebaseRepository
                             documentRef.set(groupCopy)
                             addMemberToGroup(currentUser.email, groupCopy.groupId!!).first()
                         }
-                    }.addOnFailureListener{
-                        cancel("Group creation error", cause = it)
+                    }.addOnFailureListener{ exception ->
+
+                        val errorMessage = "Group creation error"
+                        firebaseCrashlytics.run {
+                            log(errorMessage)
+                            setCustomKey("group", group.toString())
+                            recordException(exception)
+                        }
+                        cancel(errorMessage, cause = exception)
                     }
             }
             awaitClose()
@@ -158,8 +186,15 @@ class FirebaseRepository
                         .addOnSuccessListener { documentRef ->
                             documentRef.set(groupMember.copy(id = documentRef.id))
                             trySend(true)
-                        }.addOnFailureListener{
-                            cancel("Error on add member to group", cause = it)
+                        }.addOnFailureListener{ exception ->
+                            val errorMessage = "Error on add member to group"
+                            firebaseCrashlytics.run {
+                                log(errorMessage)
+                                setCustomKey("groupId", groupId)
+                                setCustomKey("memberEmail", email)
+                                recordException(exception)
+                            }
+                            cancel(errorMessage, cause = exception)
                         }
                 }
             }
@@ -179,10 +214,22 @@ class FirebaseRepository
                         val user = querySnapshot.documents[0].toUser()!!
                         trySend(user)
                     }else{
-                        cancel("User not found by the given email", cause = UserNotFoundException())
+                        val errorMessage = "User not found by the given email"
+                        firebaseCrashlytics.run {
+                            log(errorMessage)
+                            setCustomKey("userEmail", email)
+                            recordException(UserNotFoundException())
+                        }
+                        cancel(errorMessage, cause = UserNotFoundException())
                     }
-                }.addOnFailureListener {
-                    cancel("Error on fetching user by email", cause = it)
+                }.addOnFailureListener { exception ->
+                    val errorMessage = "Error on fetching user by email"
+                    firebaseCrashlytics.run {
+                        log(errorMessage)
+                        setCustomKey("userEmail", email)
+                        recordException(exception)
+                    }
+                    cancel(errorMessage, cause = exception)
                 }
 
             awaitClose()
@@ -195,7 +242,12 @@ class FirebaseRepository
                 .document(userId)
                 .get().await().toUser()
         } catch (e: Exception){
-            Log.e(TAG, "Error fetching user by id")
+            val errorMessage = "Error on fetching user by id"
+            firebaseCrashlytics.run {
+                log(errorMessage)
+                setCustomKey("userid", userId)
+                recordException(e)
+            }
             null
         }
     }
@@ -210,13 +262,26 @@ class FirebaseRepository
                     if (querySnapshot.isEmpty) {
                         trySend(false)
                     } else {
+                        val errorMessage = "Error the member is already in the group"
+                        firebaseCrashlytics.run {
+                            log(errorMessage)
+                            setCustomKey("userid", userId)
+                            setCustomKey("groupId", groupId)
+                        }
                         cancel(
-                            "Error the member is already in the group",
+                            errorMessage,
                             cause = UserAlreadyInTheGroupException()
                         )
                     }
-                }.addOnFailureListener {
-                    cancel("Error on verifying group member", cause = it)
+                }.addOnFailureListener { exception ->
+                    val errorMessage = "Error on verifying group member"
+                    firebaseCrashlytics.run {
+                        log(errorMessage)
+                        setCustomKey("userid", userId)
+                        setCustomKey("groupId", groupId)
+                        recordException(exception)
+                    }
+                    cancel(errorMessage, cause = exception)
                 }
             awaitClose()
         }
@@ -235,7 +300,12 @@ class FirebaseRepository
                     getUserById(it!!.userId)!!
                 }
         }catch (e: Exception){
-            Log.e(TAG,"Error fetching group members: ${e.message}")
+            val errorMessage = "Error fetching group members"
+            firebaseCrashlytics.run {
+                log(errorMessage)
+                setCustomKey("groupId", groupId)
+                recordException(e)
+            }
             emptyList()
         }
     }
@@ -251,7 +321,13 @@ class FirebaseRepository
                 .whereEqualTo("userId", currentUser?.userId)
                 .addSnapshotListener { querySnapshot, exception ->
                     if (exception != null){
-                        cancel("Error fetching user groups", exception)
+                        val errorMessage = "Error fetching user groups"
+                        firebaseCrashlytics.run {
+                            log(errorMessage)
+                            currentUser?.userId?.let { setCustomKey("userId", it) }
+                            recordException(exception)
+                        }
+                        cancel(errorMessage, exception)
                     }else{
                         launch {
                             val groupMessages = querySnapshot?.documents
@@ -277,7 +353,12 @@ class FirebaseRepository
                 .document(groupId)
                 .get().await().toGroup()
         } catch (e: Exception){
-            Log.e(TAG, "Error fetching group by id")
+            val errorMessage = "Error fetching group by id"
+            firebaseCrashlytics.run {
+                log(errorMessage)
+                setCustomKey("groupId", groupId)
+                recordException(e)
+            }
             null
         }
     }
@@ -292,7 +373,12 @@ class FirebaseRepository
             documentRef.set(message.copy(messageId = documentRef.id))
             true
         }catch (e: Exception) {
-            Log.e(TAG, "Error sending message to group")
+            val errorMessage = "Error sending message to group"
+            firebaseCrashlytics.run {
+                log(errorMessage)
+                setCustomKey("message", message.toString())
+                recordException(e)
+            }
             false
         }
     }
@@ -305,9 +391,15 @@ class FirebaseRepository
                 .whereEqualTo("groupId", groupId)
                 .orderBy("timestamp", Query.Direction.DESCENDING)
                 .limit(500)
-                .addSnapshotListener { querySnapshot, error ->
-                    if(error != null) {
-                        cancel("Error on fetching messages", error)
+                .addSnapshotListener { querySnapshot, exception ->
+                    if(exception != null) {
+                        val errorMessage = "Error on fetching messages"
+                        firebaseCrashlytics.run {
+                            log(errorMessage)
+                            setCustomKey("groupId", groupId)
+                            recordException(exception)
+                        }
+                        cancel(errorMessage, exception)
                     }
                     launch {
                         val messages = querySnapshot?.map {
@@ -333,7 +425,12 @@ class FirebaseRepository
                 .get()
                 .await().documents[0].toMessage()
         }catch (e: Exception) {
-            Log.e(TAG, "Error getting group last message ${e.cause}")
+            val errorMessage = "Error getting group last message"
+            firebaseCrashlytics.run {
+                log(errorMessage)
+                setCustomKey("groupId", groupId)
+                recordException(e)
+            }
             null
         }
     }
@@ -352,7 +449,13 @@ class FirebaseRepository
 
             docRef.delete().await()
         }catch (e: Exception) {
-            Log.e(TAG, "Error removing member from group ${e}")
+            val errorMessage = "Error removing member from group"
+            firebaseCrashlytics.run {
+                log(errorMessage)
+                setCustomKey("memberId", userId)
+                setCustomKey("groupId", groupId)
+                recordException(e)
+            }
         }
     }
 
@@ -380,7 +483,12 @@ class FirebaseRepository
                 .document( groupId )
                 .delete().await()
         }catch (e: Exception) {
-            Log.e(TAG, "Error deleting group ")
+            val errorMessage = "Error deleting group"
+            firebaseCrashlytics.run {
+                log(errorMessage)
+                group.groupId?.let { setCustomKey("groupId", it) }
+                recordException(e)
+            }
         }
     }
 
@@ -398,7 +506,12 @@ class FirebaseRepository
                     docRef.delete().await()
                 }
         }catch (e: Exception) {
-            Log.e(TAG, "Error removing member all group messages ${e}")
+            val errorMessage = "Error removing member all group messages"
+            firebaseCrashlytics.run {
+                log(errorMessage)
+                setCustomKey("groupId", groupId)
+                recordException(e)
+            }
         }
     }
 
@@ -415,7 +528,12 @@ class FirebaseRepository
                     docRef.delete().await()
                 }
         }catch (e: Exception) {
-            Log.e(TAG, "Error removing all member from the group ${e}")
+            val errorMessage = "Error removing all member from the group"
+            firebaseCrashlytics.run {
+                log(errorMessage)
+                setCustomKey("groupId", groupId)
+                recordException(e)
+            }
         }
     }
 
@@ -426,7 +544,12 @@ class FirebaseRepository
             val taskSnapShot = ref.putFile(thumbnailUri).await()
             return taskSnapShot.task.snapshot.storage.downloadUrl.await()
         }catch (e: Exception){
-            Log.e(TAG, "Error uploading group thumbnail ${e}")
+            val errorMessage = "Error uploading group thumbnail"
+            firebaseCrashlytics.run {
+                log(errorMessage)
+                setCustomKey("thumbnailUri", thumbnailUri.toString())
+                recordException(e)
+            }
             Uri.EMPTY
         }
     }
@@ -436,7 +559,12 @@ class FirebaseRepository
             val ref = firebaseStorage.getReferenceFromUrl(thumbnailUrl)
             ref.delete().await()
         }catch (e: Exception){
-            Log.e(TAG, "Error deleting group thumbnail $e")
+            val errorMessage = "Error deleting group thumbnail $e"
+            firebaseCrashlytics.run {
+                log(errorMessage)
+                setCustomKey("thumbnailUri", thumbnailUrl)
+                recordException(e)
+            }
         }
     }
 }
