@@ -1,9 +1,9 @@
 <resources>
     <string name="app_name">Super Pomodoro</string>
-    <string name="home_tab" translatable="false">Home</string>
-    <string name="chat_tab" translatable="false">Chat</string>
-    <string name="games_tab" translatable="false">Games</string>
-    <string name="pomodoro" translatable="false">Pomodoro</string>
+    <string name="home_tab">Home</string>
+    <string name="chat_tab">Chat</string>
+    <string name="games_tab">Games</string>
+    <string name="pomodoro">Pomodoro</string>
     <string name="pomodoro_short_break">Short break</string>
     <string name="pomodoro_Long_break">Long break</string>
     <string name="arrow_back_icon_content_description">Back</string>
@@ -13,9 +13,9 @@
     <string name="sound_label">Sound</string>
     <string name="vibration_label">Vibration</string>
     <string name="game_item_image_description">Image of a game</string>
-    <string name="button_login" translatable="false">Login</string>
+    <string name="button_login">Login</string>
     <string name="input_password">Password</string>
-    <string name="input_email" translatable="false">E-mail</string>
+    <string name="input_email">E-mail</string>
     <string name="login_screen_title">Login to start chatting</string>
     <string name="no_account_label">"Don't have an account? "</string>
     <string name="sign_up_here_label">Signup here</string>
@@ -41,7 +41,7 @@
     <string name="message_input_placeholder">Message</string>
     <string name="menu_icon_cd">Menu icon</string>
     <string name="leave_the_group_menu_option">Leave the group</string>
-    <string name="action_dialog_button_ok" translatable="false">OK</string>
+    <string name="action_dialog_button_ok">OK</string>
     <string name="action_dialog_button_cancel">Cancel</string>
     <string name="leave_the_group_dialog_text">Leave the group?</string>
     <string name="delete_the_group_dialog_text">Are you sure that you want to delete this group?</string>
@@ -53,5 +53,5 @@
     <string name="invalid_repeat_password_length_error">Repeat password must have at least %d characters</string>
     <string name="passwords_did_not_match_error">Passwords did not match</string>
     <string name="empty_group_name_error">Write the group name!</string>
-    <string name="group_member_item_admin_label" translatable="false">admin</string>
+    <string name="group_member_item_admin_label">admin</string>
 </resources>

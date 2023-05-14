@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Super Pomodoro</string>
+    <string name="home_tab" translatable="false">Inicio</string>
+    <string name="chat_tab" translatable="false">Chat</string>
+    <string name="games_tab" translatable="false">Juegos</string>
+    <string name="pomodoro" translatable="false">Pomodoro</string>
+    <string name="pomodoro_short_break">Descanso corto</string>
+    <string name="pomodoro_Long_break">Descanso largo</string>
+    <string name="arrow_back_icon_content_description">Atrás</string>
+    <string name="settings_screen_title">Configuración</string>
+    <string name="duration_label">Duraciones</string>
+    <string name="alerts_label">Alertas</string>
+    <string name="sound_label">Sonido</string>
+    <string name="vibration_label">Vibración</string>
+    <string name="game_item_image_description">Imagen de un juego</string>
+    <string name="button_login" translatable="false">Iniciar sesión</string>
+    <string name="input_password">Contraseña</string>
+    <string name="input_email" translatable="false">Correo electrónico</string>
+    <string name="login_screen_title">Inicia sesión para empezar a chatear</string>
+    <string name="no_account_label">"¿No tienes una cuenta? "</string>
+    <string name="sign_up_here_label">Regístrate aquí</string>
+    <string name="register_screen_title">Regístrate para empezar a chatear</string>
+    <string name="input_username">Nombre de usuario</string>
+    <string name="input_repeat_password">Repetir contraseña</string>
+    <string name="button_register">Registrarse</string>
+    <string name="add_members_title">Añadir miembros</string>
+    <string name="email_already_in_use_error">Esta dirección de correo electrónico ya está en uso por otra cuenta.</string>
+    <string name="account_creation_error">Error al crear cuenta</string>
+    <string name="signup_screen_title">Registro</string>
+    <string name="invalid_credentials_error">Contraseña incorrecta</string>
+    <string name="invalid_user_error">Usuario inválido</string>
+    <string name="create_group_dialog_title">Crear grupo</string>
+    <string name="input_group_name_placeholder">Nombre del grupo</string>
+    <string name="create_group_dialog_button_create">Crear</string>
+    <string name="user_not_found_error">Usuario no encontrado</string>
+    <string name="invalid_email_error">Correo electrónico inválido</string>
+    <string name="user_already_in_the_group_error">Este usuario ya está en el grupo</string>
+    <string name="group_creation_message">has creado el grupo</string>
+    <string name="added_to_the_group_message">te han agregado</string>
+    <string name="message_input_cd">Entrada de texto del mensaje</string>
+    <string name="message_input_placeholder">Mensaje</string>
+    <string name="menu_icon_cd">Icono de menú</string>
+    <string name="leave_the_group_menu_option">Abandonar el grupo</string>
+    <string name="action_dialog_button_ok" translatable="false">OK</string>
+    <string name="action_dialog_button_cancel">Cancelar</string>
+    <string name="leave_the_group_dialog_text">¿Abandonar el grupo?</string>
+    <string name="delete_the_group_dialog_text">¿Seguro que quieres eliminar este grupo?</string>
+    <string name="delete_the_group_menu_option">Eliminar grupo</string>
+    <string name="remove_the_member_dialog_text">¿Eliminar a este usuario?</string>
+    <string name="invalid_password_error">Contraseña inválida</string>
+    <string name="invalid_username_length_error">El nombre de usuario debe tener al menos %d caracteres</string>
+    <string name="invalid_password_length_error">La contraseña debe tener al menos %d caracteres</string>
+    <string name="invalid_repeat_password_length_error">La contraseña repetida debe tener al menos %d caracteres</string>
+    <string name="passwords_did_not_match_error">Las contraseñas no coinciden</string>
+    <string name="empty_group_name_error">¡Escribe el nombre del grupo!</string>
+    <string name="group_member_item_admin_label" translatable="false">admin</string>
+</resources>
