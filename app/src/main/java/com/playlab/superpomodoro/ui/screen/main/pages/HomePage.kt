@@ -110,7 +110,7 @@ fun HomePage(
 
         RemainingTimeAnimation(
             canvasSize = dimensionResource(id = R.dimen.remaining_time_animation_size),
-            value = timeLeft?.toInt() ?: 100,
+            value = timeLeft?.toInt() ?: 0,
             maxValue = currentTimerValue.toInt()
         )
 
