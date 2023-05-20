@@ -42,11 +42,17 @@ fun MainScreen(
     LaunchedEffect(key1 = isPomodoroRunning, block = {
         if(isPomodoroRunning == true){
             pomodoroTimerStatus?.observe(lifeCycleOwner){ timerStatus ->
-                // enable tabs when pomodoro is in break time
-                if(timerStatus in arrayOf(TimerStatus.LONG_BREAK, TimerStatus.SHORT_BREAK))
+                // enable tabs when pomodoro is in break time or stopped
+                if(timerStatus in arrayOf(
+                        TimerStatus.LONG_BREAK,
+                        TimerStatus.SHORT_BREAK,
+                        TimerStatus.STOPPED,
+                    )) {
                     disabledTabs.clear()
-                // disable chat and games tabs
-                else disabledTabs.addAll(listOf(TabPage.Chat, TabPage.Games))
+                }else {
+                    // disable chat and games tabs
+                    disabledTabs.addAll(listOf(TabPage.Chat, TabPage.Games))
+                }
             }
         }else{
             // timer is stopped, enable all tabs
