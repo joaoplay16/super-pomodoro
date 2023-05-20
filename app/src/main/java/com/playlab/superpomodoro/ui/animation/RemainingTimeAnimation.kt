@@ -28,10 +28,14 @@ fun  RemainingTimeAnimation(
     value: Int = 23,
     maxValue: Int = 60
 ) {
-    val percentage = (value.toFloat() / maxValue.toFloat())
+    var percentage = 1f
+    if(value <= maxValue){
+        percentage = (value.toFloat() / maxValue.toFloat())
+    }
     val sweepAngle by animateFloatAsState(
         targetValue = ( percentage * 360  ),
-        animationSpec = tween(1000)
+        animationSpec = tween(1000),
+        label = "sweepAngle"
     )
 
     Column(modifier = Modifier
@@ -48,7 +52,7 @@ fun  RemainingTimeAnimation(
         },
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+    ) {
 
     }
 }
@@ -57,7 +61,7 @@ fun DrawScope.foregroundIndicator(
     componentSize: Size,
     sweepAngle: Float,
     color: Color
-    ){
+){
     drawArc(
         size = componentSize,
         color = color,
@@ -84,5 +88,4 @@ fun PercentageCircleAnimationPreview() {
             )
         }
     }
-
 }
