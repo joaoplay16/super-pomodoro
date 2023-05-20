@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -74,6 +75,12 @@ class MainActivity : ComponentActivity() {
                 isSoundAllowed = isSoundAllowedPreference,
                 isVibrationAllowed = isVibrationAllowedPreference
             )
+
+            LaunchedEffect(key1 = pomodoroDurationPreference != null, block = {
+                pomodoroDurationPreference?.let{
+                    pomodoroViewModel.setTimeLeft(it)
+                }
+            })
 
             val isRunning = pomodoroViewModel.isRunning
             val isSoundAllowed by pomodoroViewModel.isSoundAllowed

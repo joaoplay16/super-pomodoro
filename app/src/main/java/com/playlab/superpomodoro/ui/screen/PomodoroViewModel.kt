@@ -44,7 +44,6 @@ class PomodoroViewModel @Inject constructor(
         isVibrationAllowed: Boolean?
     ){
         pomodoroDuration?.let {
-            setTimeLeft(it)
             _pomodoroDuration.value = it
         }
         shortBreakDuration?.let {
