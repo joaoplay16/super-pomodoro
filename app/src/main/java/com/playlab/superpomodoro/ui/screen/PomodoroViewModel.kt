@@ -104,6 +104,7 @@ class PomodoroViewModel @Inject constructor(
 
     private fun startPomodoroTimer(duration: Long) {
         setTimeLeft(duration)
+        setTimeStatus(TimerStatus.POMODORO)
         timer = Timer()
         timer?.scheduleAtFixedRate(object : TimerTask() {
             override fun run() {
@@ -152,7 +153,7 @@ class PomodoroViewModel @Inject constructor(
 
         setPomodoroCount(0)
         setTimeLeft(_pomodoroDuration.value)
-        setTimeStatus(TimerStatus.POMODORO)
+        setTimeStatus(TimerStatus.STOPPED)
         _endOfCycle.value = null
     }
 
