@@ -35,7 +35,6 @@ fun  RemainingTimeAnimation(
     val sweepAngle by animateFloatAsState(
         targetValue = ( percentage * 360  ),
         animationSpec = tween(1000),
-        label = "sweepAngle"
     )
 
     Column(modifier = Modifier
