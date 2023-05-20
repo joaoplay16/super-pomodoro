@@ -24,3 +24,6 @@
 -dontwarn org.bouncycastle.**
 -dontwarn org.openjsse.**
 -keep class com.google.android.gms.internal.** { *; }
+
+# To prevent the models from being modified
+-keepclassmembers class com.playlab.superpomodoro.model.** { *; }
