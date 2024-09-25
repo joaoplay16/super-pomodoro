@@ -105,7 +105,7 @@ class PomodoroViewModel @Inject constructor(
         setTimeLeft(duration)
         setTimeStatus(TimerStatus.POMODORO)
         timer = Timer()
-        timer?.scheduleAtFixedRate(object : TimerTask() {
+        timer?.schedule(object : TimerTask() {
             override fun run() {
                 setTimeLeft(timeLeft - 1000)
 
@@ -129,7 +129,7 @@ class PomodoroViewModel @Inject constructor(
     private fun startBreakTimer(duration: Long) {
         setTimeLeft(duration)
         timer = Timer()
-        timer?.scheduleAtFixedRate(object : TimerTask() {
+        timer?.schedule(object : TimerTask() {
             override fun run() {
                 setTimeLeft(timeLeft - 1000)
                 if (timeLeft <= 0) {
