@@ -1,6 +1,8 @@
 package com.playlab.superpomodoro.ui.screen
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -66,18 +68,18 @@ class PomodoroViewModel @Inject constructor(
     val isVibrationAllowed = _isVibrationAllowed
 
     private val _pomodoroDuration =
-        mutableStateOf(DEFAULT_POMODORO_DURATION.minutes.inWholeMilliseconds)
+        mutableLongStateOf(DEFAULT_POMODORO_DURATION.minutes.inWholeMilliseconds)
 
     private val _shortBreakDuration =
-        mutableStateOf(DEFAULT_SHORT_BREAK_DURATION.minutes.inWholeMilliseconds)
+        mutableLongStateOf(DEFAULT_SHORT_BREAK_DURATION.minutes.inWholeMilliseconds)
 
     private val _longBreakDuration =
-        mutableStateOf(DEFAULT_LONG_BREAK_DURATION.minutes.inWholeMilliseconds)
+        mutableLongStateOf(DEFAULT_LONG_BREAK_DURATION.minutes.inWholeMilliseconds)
 
-    private val _timeLeft = mutableStateOf(_pomodoroDuration.value)
+    private val _timeLeft = mutableLongStateOf(_pomodoroDuration.value)
     val timeLeft by _timeLeft
 
-    private val _pomodoroCount = mutableStateOf(0)
+    private val _pomodoroCount = mutableIntStateOf(0)
     val pomodoroCount by _pomodoroCount
 
     private val _timerStatus = MutableLiveData(TimerStatus.POMODORO)
