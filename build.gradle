@@ -3,9 +3,10 @@ buildscript {
         compose_ui_version = '1.5.4'
         kotlin_version = '1.9.20'
         agp_version = '8.2.0'
+        hilt_version = '2.51'
     }
     dependencies {
-        classpath 'com.google.dagger:hilt-android-gradle-plugin:2.51'
+        classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
         classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlin_version"
         classpath 'com.google.gms:google-services:4.4.2'
         classpath 'com.google.firebase:firebase-crashlytics-gradle:3.0.2'
