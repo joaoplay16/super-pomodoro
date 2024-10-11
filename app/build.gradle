@@ -88,7 +88,7 @@ dependencies {
     //Webview wrapper
     implementation "com.google.accompanist:accompanist-webview:0.31.0-alpha"
     // Coil
-    implementation "io.coil-kt:coil-compose:2.2.0"
+    implementation "io.coil-kt:coil-compose:2.6.0"
     implementation 'id.zelory:compressor:3.0.1'
     implementation 'com.google.android.gms:play-services-ads:22.6.0'
 
