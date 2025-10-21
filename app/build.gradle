@@ -91,7 +91,7 @@ dependencies {
     // Coil
     implementation "io.coil-kt:coil-compose:2.6.0"
     implementation 'id.zelory:compressor:3.0.1'
-    implementation 'com.google.android.gms:play-services-ads:23.4.0'
+    implementation 'com.google.android.gms:play-services-ads:24.7.0'
 
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.2'
     // Tests
