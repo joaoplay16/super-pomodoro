@@ -112,5 +112,5 @@ dependencies {
     androidTestImplementation "com.google.dagger:hilt-android-testing:$hilt_version"
 
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_ui_version"
-    debugImplementation "androidx.compose.ui:ui-test-manifest:1.7.5"
+    debugImplementation "androidx.compose.ui:ui-test-manifest:1.9.4"
 }
