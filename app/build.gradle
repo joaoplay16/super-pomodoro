@@ -88,7 +88,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-crashlytics-ktx:19.2.1'
 
     //Webview wrapper
-    implementation "com.google.accompanist:accompanist-webview:0.31.0-alpha"
+    implementation "com.google.accompanist:accompanist-webview:0.36.0"
     // Coil
     implementation "io.coil-kt:coil-compose:2.6.0"
     implementation 'id.zelory:compressor:3.0.1'
