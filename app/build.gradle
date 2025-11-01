@@ -84,8 +84,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage-ktx:21.0.2'
     implementation 'com.google.firebase:firebase-analytics:23.0.0'
     implementation 'com.google.firebase:firebase-auth:24.0.1'
-    implementation 'com.google.firebase:firebase-crashlytics-ktx:19.2.1'
-    implementation 'com.google.firebase:firebase-crashlytics-ktx:19.2.1'
+    implementation 'com.google.firebase:firebase-crashlytics-ktx:19.4.4'
 
     //Webview wrapper
     implementation "com.google.accompanist:accompanist-webview:0.36.0"
